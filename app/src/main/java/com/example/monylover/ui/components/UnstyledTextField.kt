@@ -86,7 +86,7 @@ fun UnstyledTextField(
                 contentPadding = PaddingValues(horizontal = 16.dp),
                 colors = TextFieldDefaults.textFieldColors(
                     containerColor = Color.Transparent,
-                    textColor = TextPrimary,
+
                     cursorColor = Primary,
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
