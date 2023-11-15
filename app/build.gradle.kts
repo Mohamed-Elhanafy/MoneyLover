@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.monylover"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -72,9 +72,6 @@ dependencies {
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.27.0")
 
     //navigation
-    dependencies {
-        val nav_version = "2.7.5"
-
-        implementation("androidx.navigation:navigation-compose:$nav_version")
-    }
+    val nav_version = "2.7.5"
+    implementation("androidx.navigation:navigation-compose:$nav_version")
 }

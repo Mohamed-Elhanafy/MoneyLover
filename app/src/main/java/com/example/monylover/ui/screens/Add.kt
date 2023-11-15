@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -15,8 +16,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
-import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -27,8 +26,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -48,27 +47,28 @@ import androidx.navigation.compose.rememberNavController
 import com.example.monylover.ui.components.MyDatePickerDialog
 import com.example.monylover.ui.components.TableRow
 import com.example.monylover.ui.components.UnstyledTextField
+import com.example.monylover.ui.models.Recurrence
 import com.example.monylover.ui.theme.BackgroundElevated
 import com.example.monylover.ui.theme.MonyLoverTheme
 import com.example.monylover.ui.theme.Primary
 import com.example.monylover.ui.theme.Shapes
 import com.example.monylover.ui.theme.TopAppBarBackground
-import java.time.Instant
-import java.time.ZoneOffset
-import java.util.Calendar
+import com.example.monylover.ui.viewmodels.AddViewModel
 
-@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddScreen(navController: NavController, name: String) {
-    val recurrenceOptions = listOf("None", "Daily", "Weekly", "Monthly", "Yearly")
+fun AddScreen(navController: NavController, addViewmodel: AddViewModel = AddViewModel()) {
+    val state by addViewmodel.uiState.collectAsState()
+
+    val recurrence = listOf(
+        Recurrence.None,
+        Recurrence.Daily,
+        Recurrence.Weekly,
+        Recurrence.Monthly,
+        Recurrence.Yearly
+    )
+
     val categoriesOptions = listOf("groceries", "transportation", "entertainment", "bills", "other")
-    var selectedRecurrence by remember { mutableStateOf(recurrenceOptions[0]) }
-    var selectedCategory by remember { mutableStateOf(recurrenceOptions[0]) }
-
-    var selectedDate by remember { mutableStateOf("") }
-
-
 
     Scaffold(
         topBar = {
@@ -94,10 +94,10 @@ fun AddScreen(navController: NavController, name: String) {
                 ) {
                     TableRow(label = "Amount", detailContent = {
                         UnstyledTextField(
-                            value = "Amount",
-                            onValueChange = { },
+                            value = state.amount,
+                            onValueChange = { addViewmodel.setAmount(it) },
                             modifier = Modifier.fillMaxWidth(),
-                            placeholder = { Text("Amount") },
+                            placeholder = { Text("0") },
                             arrangement = Arrangement.End,
                             maxLines = 1,
                             textStyle = TextStyle(
@@ -106,7 +106,6 @@ fun AddScreen(navController: NavController, name: String) {
                             keyboardOptions = KeyboardOptions(
                                 keyboardType = KeyboardType.Number,
                             )
-
                         )
                     })
                     Divider(Modifier.padding(start = 16.dp, end = 16.dp))
@@ -115,17 +114,21 @@ fun AddScreen(navController: NavController, name: String) {
                         TextButton(
                             onClick = { recurrenceMenuExpanded = true },
                             contentPadding = PaddingValues(0.dp),
-                            modifier = Modifier.height(16.dp)
+                            modifier = Modifier.height(18.dp)
                         ) {
-                            Text(text = selectedRecurrence)
+                            Text(
+                                text = state.recurrence.name,
+                                textAlign = TextAlign.Right,
+                                fontSize = 14.sp
+                            )
                             DropdownMenu(
                                 expanded = recurrenceMenuExpanded,
                                 onDismissRequest = { recurrenceMenuExpanded = false }) {
-                                recurrenceOptions.forEach { label ->
+                                recurrence.forEach { label ->
                                     DropdownMenuItem(
-                                        text = { Text(text = label) },
+                                        text = { Text(text = label.name) },
                                         onClick = {
-                                            selectedRecurrence = label
+                                            addViewmodel.setRecurrence(label)
                                             recurrenceMenuExpanded = false
                                         })
                                 }
@@ -138,29 +141,47 @@ fun AddScreen(navController: NavController, name: String) {
                     val showDialog = rememberSaveable { mutableStateOf(false) }
 
                     TableRow(label = "Date", onClick = {
-                        showDialog.value = true
 
-                    }){
-                        if (showDialog.value){
+                    }) {
+                        if (showDialog.value) {
                             MyDatePickerDialog(
                                 onDateSelected = {
-                                    selectedDate = it
+                                    addViewmodel.setDate(it)
                                     showDialog.value = false
                                 },
                                 onDismiss = { showDialog.value = false }
                             )
                         }
+                        TextButton(
+                            onClick = { showDialog.value = true },
+                            shape = Shapes.large,
+                            contentPadding = PaddingValues(0.dp),
+                            modifier = Modifier.height(20.dp)
+                        ) {
+                            Text(
+                                text = state.date ?: "Select date"
+                            )
 
-                        Text(text = selectedDate , fontSize = 14.sp, modifier = Modifier.padding(end = 10.dp))
+                        }
                     }
 
                     Divider(Modifier.padding(start = 16.dp, end = 16.dp))
                     TableRow(label = "Note", detailContent = {
+                        Spacer(modifier = Modifier.weight(1f))
                         UnstyledTextField(
-                            value = "",
-                            placeholder = { Text("Leave some notes") },
+                            value = state.note,
+                            placeholder = {
+                                Text(
+                                    "Leave some notes",
+                                    fontSize = 14.sp,
+                                    textAlign = TextAlign.Right,
+                                    color = Primary
+                                )
+                            },
                             arrangement = Arrangement.End,
-                            onValueChange = { },
+                            onValueChange = {
+                                addViewmodel.setNote(it)
+                            },
                             modifier = Modifier.fillMaxWidth(),
                             textStyle = TextStyle(
                                 textAlign = TextAlign.Right,
@@ -179,7 +200,7 @@ fun AddScreen(navController: NavController, name: String) {
                             modifier = Modifier.height(20.dp)
                         ) {
                             Text(
-                                selectedCategory,
+                                state.category ?: "Select category",
                             )
                             DropdownMenu(expanded = categoriesMenuOpened,
                                 onDismissRequest = { categoriesMenuOpened = false }) {
@@ -196,7 +217,7 @@ fun AddScreen(navController: NavController, name: String) {
                                             )
                                         }
                                     }, onClick = {
-                                        selectedCategory = category
+                                        addViewmodel.setCategory(category)
                                         categoriesMenuOpened = false
                                     })
                                 }
@@ -224,6 +245,6 @@ fun AddScreen(navController: NavController, name: String) {
 @Composable
 fun AddPreview() {
     MonyLoverTheme {
-        AddScreen(navController = rememberNavController(), name = "Add")
+        AddScreen(navController = rememberNavController())
     }
 }
