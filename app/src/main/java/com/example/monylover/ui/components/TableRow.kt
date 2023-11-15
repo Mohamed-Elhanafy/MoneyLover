@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -28,7 +29,9 @@ fun TableRow(
     label: String,
     hasArrow: Boolean = false,
     isDestructive: Boolean = false,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
+    detailContent: (@Composable RowScope.() -> Unit)? = null,
+    content: (@Composable RowScope.() -> Unit)? = null
 ) {
 
     Row(
@@ -36,17 +39,25 @@ fun TableRow(
             .clickable { onClick() }
             .padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
+
         Text(
             text = label,
             style = Typography.bodyMedium,
             color = if (isDestructive == true) Destructive else TextPrimary
         )
+        if (content != null) {
+            content()
+        }
         Spacer(modifier = Modifier.weight(1f))
         if (hasArrow) {
             Icon(
                 painter = painterResource(id = R.drawable.round_chevron_right_24),
                 contentDescription = "arrow icon",
             )
+        }
+
+        if (detailContent != null) {
+            detailContent()
         }
     }
 
