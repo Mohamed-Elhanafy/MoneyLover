@@ -1,6 +1,7 @@
 package com.example.monylover.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,8 +24,18 @@ import com.example.monylover.ui.theme.TextPrimary
 import com.example.monylover.ui.theme.Typography
 
 @Composable
-fun TableRow(label: String, hasArrow: Boolean = false, isDestructive: Boolean = false) {
-    Row(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
+fun TableRow(
+    label: String,
+    hasArrow: Boolean = false,
+    isDestructive: Boolean = false,
+    onClick: () -> Unit = {}
+) {
+
+    Row(
+        modifier = Modifier
+            .clickable { onClick() }
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+    ) {
         Text(
             text = label,
             style = Typography.bodyMedium,
@@ -38,4 +49,5 @@ fun TableRow(label: String, hasArrow: Boolean = false, isDestructive: Boolean = 
             )
         }
     }
+
 }

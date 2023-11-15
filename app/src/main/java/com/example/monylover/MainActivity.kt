@@ -16,6 +16,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -27,6 +31,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.monylover.ui.NavBar
 import com.example.monylover.ui.screens.AddScreen
+import com.example.monylover.ui.screens.Categories
 import com.example.monylover.ui.screens.ExpanseScreen
 import com.example.monylover.ui.screens.ReportsScreen
 import com.example.monylover.ui.screens.SettingScreen
@@ -42,8 +47,10 @@ class MainActivity : ComponentActivity() {
 
                 val navController = rememberNavController()
                 val backStackEntry = navController.currentBackStackEntryAsState()
+
                 Scaffold(
                     bottomBar = {
+
                         NavBar(backStackEntry = backStackEntry, navController = navController)
                     },
                 )
@@ -91,7 +98,16 @@ class MainActivity : ComponentActivity() {
                                     .padding(innerPadding),
                                 color = MaterialTheme.colorScheme.background
                             ) {
-                                SettingScreen(navController = navController)
+                                SettingScreen(navController = navController )
+                            }
+                        }
+                        composable("setting/categories") {
+                            Surface(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(innerPadding),
+                            ) {
+                                Categories(navController = navController)
                             }
                         }
                     }

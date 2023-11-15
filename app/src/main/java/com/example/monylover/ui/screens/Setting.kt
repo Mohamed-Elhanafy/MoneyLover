@@ -1,10 +1,14 @@
 package com.example.monylover.ui.screens
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Scaffold
@@ -38,13 +42,19 @@ fun SettingScreen(navController: NavController) {
                 Column(
                     modifier = Modifier
                         .padding(16.dp)
-                        .clip(Shapes.medium)
+                        .clip(Shapes.large)
                         .fillMaxWidth()
                         .background(BackgroundElevated)
 
                 ) {
-                    TableRow(label = "categories" , hasArrow = true)
-                    TableRow(label = "erase all data" , isDestructive = true)
+                    TableRow(label = "categories", hasArrow = true, onClick = {
+                        run {
+                            navController.navigate("setting/categories")
+
+                        }
+                    })
+                    Divider(Modifier.padding(start = 16.dp, end = 16.dp))
+                    TableRow(label = "erase all data", isDestructive = true)
                 }
             }
         }
