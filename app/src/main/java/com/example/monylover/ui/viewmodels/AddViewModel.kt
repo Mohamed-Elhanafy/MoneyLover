@@ -1,5 +1,6 @@
 package com.example.monylover.ui.viewmodels
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.example.monylover.ui.models.Recurrence
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,7 +16,8 @@ data class AddScreenState(
     val category: String? = null, // TODO: Change to Category when build category model
 )
 
-class AddViewModel : ViewModel() {
+class AddViewModel() : ViewModel() {
+
     private val _uiState = MutableStateFlow(AddScreenState())
     val uiState: StateFlow<AddScreenState> = _uiState.asStateFlow()
 
@@ -34,6 +36,7 @@ class AddViewModel : ViewModel() {
             }
         }
     }
+
     fun setRecurrence(recurrence: Recurrence) {
         _uiState.update { currentState ->
             currentState.copy(
@@ -65,6 +68,8 @@ class AddViewModel : ViewModel() {
             )
         }
     }
+
+
 
     fun submitExpense() {
         //todo save to local Db

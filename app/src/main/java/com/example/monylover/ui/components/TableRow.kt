@@ -29,6 +29,7 @@ import com.example.monylover.ui.theme.Typography
 @Composable
 fun TableRow(
     label: String,
+    modifier : Modifier = Modifier,
     hasArrow: Boolean = false,
     isDestructive: Boolean = false,
     onClick: () -> Unit = {},
