@@ -11,6 +11,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredWidth
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 
@@ -34,24 +37,26 @@ import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 @Composable
 fun ColorPickerDialog(
     setShowDialog: (Boolean) -> Unit,
-    setValue: (String) -> Unit,
+    setValue: (Color) -> Unit,
 
     ) {
     Dialog(onDismissRequest = { setShowDialog(false) }) {
         val controller = rememberColorPickerController()
-        val theNewColor = remember { mutableStateOf("") }
+        val theNewColor = remember { mutableStateOf(Color.White) }
         Column(verticalArrangement = Arrangement.SpaceBetween) {
             Box(
                 modifier = Modifier
-                    .background(BackgroundElevated)
                     .clip(Shapes.large)
+                    .background(SystemGray)
+
             ) {
                 Column {
                     HsvColorPicker(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(450.dp)
-                            .padding(10.dp),
+                            .height(340.dp)
+                            .padding(10.dp)
+                        ,
                         controller = controller,
                         onColorChanged = { colorEnvelope: ColorEnvelope ->
 
@@ -61,9 +66,21 @@ fun ColorPickerDialog(
                             val fromUser: Boolean =
                                 colorEnvelope.fromUser // Represents this event is triggered by user or not.
 
-                            theNewColor.value = hexCode
+                           // controller.setWheelColor(color)
+
+                            theNewColor.value = color
                         }
                     )
+                    Surface(
+                        shape = CircleShape,
+                        color = theNewColor.value,
+                        modifier = Modifier
+                            .padding(10.dp)
+                            .align(Alignment.CenterHorizontally)
+                            .size(50.dp)
+                    ) {
+
+                    }
                     BrightnessSlider(
                         modifier = Modifier
                             .fillMaxWidth()

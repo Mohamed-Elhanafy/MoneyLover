@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.update
 
 data class CategoriesState(
     val newCategoryName: String = "",
-    val newCategoryColor: Color = Primary,
+    val newCategoryColor: Color = Color.White,
     val isDialogShow: Boolean = false
     )
 

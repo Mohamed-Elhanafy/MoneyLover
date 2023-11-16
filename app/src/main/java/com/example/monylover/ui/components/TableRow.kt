@@ -28,8 +28,8 @@ import com.example.monylover.ui.theme.Typography
 
 @Composable
 fun TableRow(
-    label: String,
-    modifier : Modifier = Modifier,
+    label: String? = null,
+    modifier: Modifier = Modifier,
     hasArrow: Boolean = false,
     isDestructive: Boolean = false,
     onClick: () -> Unit = {},
@@ -45,12 +45,14 @@ fun TableRow(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
+        if (label != null) {
+            Text(
+                text = label,
+                style = Typography.bodyMedium,
+                color = if (isDestructive == true) Destructive else TextPrimary
+            )
+        }
 
-        Text(
-            text = label,
-            style = Typography.bodyMedium,
-            color = if (isDestructive == true) Destructive else TextPrimary
-        )
 
         Spacer(modifier = Modifier.weight(1f))
         if (content != null) {
