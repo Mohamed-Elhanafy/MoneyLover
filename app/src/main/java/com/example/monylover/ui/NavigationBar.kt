@@ -5,20 +5,14 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
-import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.monylover.R
 import com.example.monylover.ui.theme.TopAppBarBackground
 
 @Composable
-fun NavBar(backStackEntry: State<NavBackStackEntry?>, navController: NavController) {
+fun NavBar(backStackEntry: NavBackStackEntry?, navController: NavController) {
     NavigationBar(
         containerColor = TopAppBarBackground
     ) {
@@ -26,7 +20,7 @@ fun NavBar(backStackEntry: State<NavBackStackEntry?>, navController: NavControll
 
         NavigationBarItem(
 
-        selected = backStackEntry.value?.destination?.route == "expanses",
+        selected = backStackEntry?.destination?.route == "expanses",
         onClick = { navController.navigate("expanses") },
         icon = {
             Icon(
@@ -39,7 +33,7 @@ fun NavBar(backStackEntry: State<NavBackStackEntry?>, navController: NavControll
         }
         )
         NavigationBarItem(
-            selected = backStackEntry.value?.destination?.route == "reports",
+            selected = backStackEntry?.destination?.route == "reports",
             onClick = { navController.navigate("reports") },
             icon = {
                 Icon(
@@ -52,7 +46,7 @@ fun NavBar(backStackEntry: State<NavBackStackEntry?>, navController: NavControll
             }
         )
         NavigationBarItem(
-            selected = backStackEntry.value?.destination?.route == "add",
+            selected = backStackEntry?.destination?.route == "add",
             onClick = { navController.navigate("add") },
             icon = {
                 Icon(
@@ -65,7 +59,7 @@ fun NavBar(backStackEntry: State<NavBackStackEntry?>, navController: NavControll
             }
         )
         NavigationBarItem(
-            selected = backStackEntry.value?.destination?.route?.startsWith("setting") ?: false,
+            selected = backStackEntry?.destination?.route?.startsWith("setting") ?: false,
             onClick = { navController.navigate("setting") },
             icon = {
                 Icon(

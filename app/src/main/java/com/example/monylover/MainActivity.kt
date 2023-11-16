@@ -2,16 +2,13 @@ package com.example.monylover
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -21,10 +18,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.core.content.ContextCompat
-import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -42,16 +36,24 @@ class MainActivity : ComponentActivity() {
     @ExperimentalMaterial3Api
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
         setContent {
             MonyLoverTheme {
 
                 val navController = rememberNavController()
-                val backStackEntry = navController.currentBackStackEntryAsState()
+                val backStackEntry by navController.currentBackStackEntryAsState()
+                var showBottomBar by rememberSaveable { mutableStateOf(true) }
+
+                showBottomBar = when (backStackEntry?.destination?.route) {
+                    "setting/categories" -> false
+                    else -> true
+                }
 
                 Scaffold(
                     bottomBar = {
-
-                        NavBar(backStackEntry = backStackEntry, navController = navController)
+                        if (showBottomBar){
+                            NavBar(backStackEntry = backStackEntry, navController = navController)
+                        }
                     },
                 )
 
@@ -98,7 +100,7 @@ class MainActivity : ComponentActivity() {
                                     .padding(innerPadding),
                                 color = MaterialTheme.colorScheme.background
                             ) {
-                                SettingScreen(navController = navController )
+                                SettingScreen(navController = navController)
                             }
                         }
                         composable("setting/categories") {

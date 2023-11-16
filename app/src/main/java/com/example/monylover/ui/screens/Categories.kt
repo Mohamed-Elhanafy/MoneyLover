@@ -71,7 +71,6 @@ fun Categories(
     navController: NavController,
     viewmodel: CategoriesViewModel = CategoriesViewModel()
 ) {
-
     val uiState by viewmodel.uiState.collectAsState()
 
     val categories = listOf(
