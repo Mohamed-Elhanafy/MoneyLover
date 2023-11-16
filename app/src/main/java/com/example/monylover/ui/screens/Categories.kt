@@ -2,15 +2,24 @@ package com.example.monylover.ui.screens
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.util.Log
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.gestures.AnchoredDraggableState
+import androidx.compose.foundation.gestures.DraggableAnchors
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.anchoredDraggable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -37,6 +46,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -44,6 +54,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -58,6 +69,8 @@ import com.example.monylover.ui.theme.BackgroundElevated
 import com.example.monylover.ui.theme.Primary
 import com.example.monylover.ui.theme.Shapes
 import com.example.monylover.ui.theme.TopAppBarBackground
+import com.example.monylover.ui.theme.Typography
+import com.example.monylover.ui.viewmodels.CategoriesState
 import com.example.monylover.ui.viewmodels.CategoriesViewModel
 import com.github.skydoves.colorpicker.compose.BrightnessSlider
 import com.github.skydoves.colorpicker.compose.ColorEnvelope
@@ -65,7 +78,7 @@ import com.github.skydoves.colorpicker.compose.HsvColorPicker
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 import java.util.Locale.Category
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun Categories(
     navController: NavController,
@@ -73,13 +86,20 @@ fun Categories(
 ) {
     val uiState by viewmodel.uiState.collectAsState()
 
-    val categories = listOf(
-        "A",
-        "B",
-        "C",
-        "D"
+    var categories =
+        remember { mutableStateListOf<CategoriesState>(
+            CategoriesState("food", Color(0xFFEF5350)) ,
+            CategoriesState("home", Color(0xFFEC407A)) ,
+            CategoriesState("car", Color(0xFFAB47BC)) ,
+            CategoriesState("health", Color(0xFF7E57C2)) ,
+            CategoriesState("education", Color(0xFF5C6BC0)) ,
 
-    )
+        )
+
+        }
+
+
+
     Scaffold(
         topBar = {
             MediumTopAppBar(title = { Text(text = "categories") },
@@ -111,17 +131,25 @@ fun Categories(
                             .clip(Shapes.large)
                             .fillMaxWidth()
                             .background(BackgroundElevated)
+
+
                     ) {
                         items(categories) { category ->
 
-
-                            TableRow( onClick = {}) {
+                            TableRow() {
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically,
-                                    modifier = Modifier.padding(horizontal = 16.dp).fillMaxWidth()
+                                    modifier = Modifier
+
+                                        .fillMaxSize()
+                                        .combinedClickable(
+                                            onClick = { Log.i("TAG", "clicked") },
+                                            onLongClick = { Log.i("TAG", "long clicked") }
+                                        )
+
                                 ) {
                                     Surface(
-                                        color = Primary,
+                                        color = category.newCategoryColor,
                                         shape = CircleShape,
                                         border = BorderStroke(
                                             width = 1.dp,
@@ -130,10 +158,10 @@ fun Categories(
                                         modifier = Modifier.size(16.dp)
                                     ) {}
                                     Text(
-                                        category,
+                                        category.newCategoryName,
+                                        style = Typography.bodyMedium,
                                         modifier = Modifier.padding(
                                             horizontal = 16.dp,
-                                            vertical = 10.dp
                                         ),
                                     )
                                 }
@@ -204,7 +232,16 @@ fun Categories(
                     }
 
                     IconButton(
-                        onClick = {},
+                        onClick = {
+                            categories.add(
+                                CategoriesState(
+                                    uiState.newCategoryName,
+                                    uiState.newCategoryColor
+                                )
+                            )
+
+                            Log.i("TAG", "categories: ${categories.size}")
+                        },
                         modifier = Modifier
                             .padding(start = 16.dp)
                     ) {
