@@ -70,8 +70,8 @@ import com.example.monylover.ui.theme.Primary
 import com.example.monylover.ui.theme.Shapes
 import com.example.monylover.ui.theme.TopAppBarBackground
 import com.example.monylover.ui.theme.Typography
-import com.example.monylover.ui.viewmodels.CategoriesState
-import com.example.monylover.ui.viewmodels.CategoriesViewModel
+import com.example.monylover.viewmodels.CategoriesState
+import com.example.monylover.viewmodels.CategoriesViewModel
 import com.github.skydoves.colorpicker.compose.BrightnessSlider
 import com.github.skydoves.colorpicker.compose.ColorEnvelope
 import com.github.skydoves.colorpicker.compose.HsvColorPicker

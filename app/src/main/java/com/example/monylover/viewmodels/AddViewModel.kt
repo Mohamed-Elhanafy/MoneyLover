@@ -1,8 +1,8 @@
-package com.example.monylover.ui.viewmodels
+package com.example.monylover.viewmodels
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import com.example.monylover.ui.models.Recurrence
+import com.example.monylover.models.Recurrence
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

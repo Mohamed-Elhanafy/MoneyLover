@@ -48,13 +48,13 @@ import androidx.navigation.compose.rememberNavController
 import com.example.monylover.ui.components.MyDatePickerDialog
 import com.example.monylover.ui.components.TableRow
 import com.example.monylover.ui.components.UnstyledTextField
-import com.example.monylover.ui.models.Recurrence
+import com.example.monylover.models.Recurrence
 import com.example.monylover.ui.theme.BackgroundElevated
 import com.example.monylover.ui.theme.MonyLoverTheme
 import com.example.monylover.ui.theme.Primary
 import com.example.monylover.ui.theme.Shapes
 import com.example.monylover.ui.theme.TopAppBarBackground
-import com.example.monylover.ui.viewmodels.AddViewModel
+import com.example.monylover.viewmodels.AddViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

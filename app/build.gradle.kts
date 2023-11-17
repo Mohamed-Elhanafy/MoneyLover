@@ -79,4 +79,8 @@ dependencies {
     //color picker
     implementation("com.github.skydoves:colorpicker-compose:1.0.5")
 
+    //fake data
+    implementation ("io.github.serpro69:kotlin-faker:1.15.0")
+
+
 }

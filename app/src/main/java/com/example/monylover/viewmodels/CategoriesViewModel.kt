@@ -1,4 +1,4 @@
-package com.example.monylover.ui.viewmodels
+package com.example.monylover.viewmodels
 
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel

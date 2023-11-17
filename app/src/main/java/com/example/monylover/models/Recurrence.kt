@@ -1,4 +1,4 @@
-package com.example.monylover.ui.models
+package com.example.monylover.models
 
 sealed class Recurrence(val name: String, val target: String) {
         object None : Recurrence("None", "None")
