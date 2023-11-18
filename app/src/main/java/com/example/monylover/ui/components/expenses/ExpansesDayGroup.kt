@@ -15,6 +15,7 @@ import com.example.monylover.ui.theme.LabelSecondary
 import com.example.monylover.ui.theme.Typography
 import java.text.DecimalFormat
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 @Composable
 fun ExpensesDayGroup(
@@ -22,9 +23,13 @@ fun ExpensesDayGroup(
     dayExpenses: DayExpenses,
     modifier: Modifier = Modifier
 ) {
+    var formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
+    val formattedDate = date.format(formatter)
+
     Column(modifier = modifier) {
         Text(
-            date.dayOfMonth.toString(),
+            text = (if (date == LocalDate.now()) "Today" else formattedDate)
+            ,
             style = Typography.headlineMedium,
             color = LabelSecondary
         )
