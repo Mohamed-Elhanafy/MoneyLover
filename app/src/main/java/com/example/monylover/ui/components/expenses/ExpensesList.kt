@@ -1,4 +1,4 @@
-package com.example.monylover.ui.components
+package com.example.monylover.ui.components.expenses
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.Column
@@ -15,7 +15,6 @@ import com.example.monylover.models.Expense
 import com.example.monylover.models.Recurrence
 import com.example.monylover.models.groupedByDay
 import com.example.monylover.ui.theme.MonyLoverTheme
-import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import kotlin.random.Random

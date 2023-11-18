@@ -1,4 +1,4 @@
-package com.example.monylover.ui.components
+package com.example.monylover.ui.components.dialogs
 
 import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker

@@ -23,7 +23,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.monylover.ui.NavBar
+import com.example.monylover.ui.components.NavBar
 import com.example.monylover.ui.screens.AddScreen
 import com.example.monylover.ui.screens.Categories
 import com.example.monylover.ui.screens.ExpanseScreen
@@ -78,7 +78,7 @@ class MainActivity : ComponentActivity() {
                                     .padding(innerPadding),
                                 color = MaterialTheme.colorScheme.background
                             ) {
-                                ReportsScreen(navController = navController, name = "reports")
+                                ReportsScreen(navController = navController)
                             }
                         }
                         composable("add") {

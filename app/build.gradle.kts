@@ -61,6 +61,7 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview")
     //implementation("androidx.compose.material3:material3:1.1.2")
     implementation("androidx.compose.material3:material3-android:1.2.0-alpha10")
+    implementation("com.github.tehras:charts:0.2.4-alpha")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
@@ -79,8 +80,9 @@ dependencies {
     //color picker
     implementation("com.github.skydoves:colorpicker-compose:1.0.5")
 
-    //fake data
-    implementation ("io.github.serpro69:kotlin-faker:1.15.0")
+    //Compose Charts
+    implementation("com.github.tehras:charts:0.2.4-alpha")
+
 
 
 }

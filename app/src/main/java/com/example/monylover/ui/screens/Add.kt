@@ -42,10 +42,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.monylover.ui.components.MyDatePickerDialog
+import com.example.monylover.ui.components.dialogs.MyDatePickerDialog
 import com.example.monylover.ui.components.TableRow
 import com.example.monylover.ui.components.UnstyledTextField
 import com.example.monylover.models.Recurrence

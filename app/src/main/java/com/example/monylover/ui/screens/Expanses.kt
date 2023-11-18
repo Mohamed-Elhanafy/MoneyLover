@@ -25,10 +25,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 
@@ -36,7 +34,7 @@ import com.example.monylover.models.Category
 import com.example.monylover.models.Expense
 import com.example.monylover.ui.components.PickerTrigger
 import com.example.monylover.models.Recurrence
-import com.example.monylover.ui.components.ExpensesList
+import com.example.monylover.ui.components.expenses.ExpensesList
 import com.example.monylover.ui.theme.LabelSecondary
 import com.example.monylover.ui.theme.MonyLoverTheme
 import com.example.monylover.ui.theme.TopAppBarBackground
