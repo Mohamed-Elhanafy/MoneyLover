@@ -118,8 +118,8 @@ fun AddScreen(navController: NavController, addViewmodel: AddViewModel = AddView
                         ) {
                             Text(
                                 text = state.recurrence.name,
-                                textAlign = TextAlign.Right,
-                                fontSize = 14.sp
+                                textAlign = TextAlign.End,
+
                             )
                             DropdownMenu(
                                 expanded = recurrenceMenuExpanded,
@@ -168,13 +168,14 @@ fun AddScreen(navController: NavController, addViewmodel: AddViewModel = AddView
                     Divider(Modifier.padding(start = 16.dp, end = 16.dp))
                     TableRow(label = "Note", detailContent = {
                         Spacer(modifier = Modifier.weight(1f))
+
                         UnstyledTextField(
                             value = state.note,
                             placeholder = {
                                 Text(
                                     "Leave some notes",
                                     fontSize = 14.sp,
-                                    textAlign = TextAlign.Right,
+                                    textAlign = TextAlign.End,
                                     color = Primary
                                 )
                             },

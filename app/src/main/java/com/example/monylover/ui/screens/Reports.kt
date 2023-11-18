@@ -1,6 +1,7 @@
 package com.example.monylover.ui.screens
 
 import android.content.res.Configuration
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,6 +12,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.DropdownMenu
@@ -49,12 +53,15 @@ import com.example.monylover.ui.theme.LabelSecondary
 import com.example.monylover.ui.theme.MonyLoverTheme
 import com.example.monylover.ui.theme.TopAppBarBackground
 import com.example.monylover.ui.theme.Typography
+import com.example.monylover.ui.utils.calculateDateRange
+import com.example.monylover.ui.utils.formatDayForRange
+import java.text.DecimalFormat
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import kotlin.random.Random
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun ReportsScreen(navController: NavController) {
 
@@ -69,54 +76,56 @@ fun ReportsScreen(navController: NavController) {
     )
 
 
-    val list = listOf(
-        Expense(
-            amount = 100.0,
-            note = "pizza",
-            date = LocalDateTime.now().minus(
-                Random.nextInt(300, 345600).toLong(),
-                ChronoUnit.SECONDS
+    val list = remember {
+        listOf(
+            Expense(
+                amount = 100.0,
+                note = "pizza",
+                date = LocalDateTime.now().minus(
+                    Random.nextInt(300, 345600).toLong(),
+                    ChronoUnit.SECONDS
+                ),
+                recurrence = Recurrence.None,
+                category = Category(
+                    name = "Food",
+                    Color(
+                        Random.nextInt(0, 255),
+                        Random.nextInt(0, 255),
+                        Random.nextInt(0, 255)
+                    )
+                )
             ),
-            recurrence = Recurrence.None,
-            category = Category(
-                name = "Food",
-                Color(
-                    Random.nextInt(0, 255),
-                    Random.nextInt(0, 255),
-                    Random.nextInt(0, 255)
+            Expense(
+                amount = 100.0,
+                note = "Coctail",
+                date = LocalDateTime.now(),
+                recurrence = Recurrence.None,
+                category = Category(
+                    name = "Bills",
+                    Color(
+                        Random.nextInt(0, 255),
+                        Random.nextInt(0, 255),
+                        Random.nextInt(0, 255)
+                    )
+                )
+            ),
+            Expense(
+                amount = 104.0,
+                note = "car wash",
+                date = LocalDateTime.now(),
+                recurrence = Recurrence.None,
+                category = Category(
+                    name = "car",
+                    Color(
+                        Random.nextInt(0, 255),
+                        Random.nextInt(0, 255),
+                        Random.nextInt(0, 255)
+                    )
                 )
             )
-        ),
-        Expense(
-            amount = 100.0,
-            note = "Coctail",
-            date = LocalDateTime.now(),
-            recurrence = Recurrence.None,
-            category = Category(
-                name = "Bills",
-                Color(
-                    Random.nextInt(0, 255),
-                    Random.nextInt(0, 255),
-                    Random.nextInt(0, 255)
-                )
-            )
-        ),
-        Expense(
-            amount = 104.0,
-            note = "car wash",
-            date = LocalDateTime.now(),
-            recurrence = Recurrence.None,
-            category = Category(
-                name = "car",
-                Color(
-                    Random.nextInt(0, 255),
-                    Random.nextInt(0, 255),
-                    Random.nextInt(0, 255)
-                )
-            )
-        )
 
-    )
+        )
+    }
 
     Scaffold(
         topBar = {
@@ -150,74 +159,110 @@ fun ReportsScreen(navController: NavController) {
 
         },
         content = { innerPadding ->
-            Column(
-                modifier = Modifier
-                    .padding(innerPadding)
-                    .padding(16.dp)
-                    .fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Row(
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Column {
-                        Text("12 Sep - 15 Sep", style = Typography.titleSmall)
-                        Spacer(modifier = Modifier.padding(6.dp))
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text("USD", style = Typography.bodyMedium, color = LabelSecondary)
-                            Spacer(modifier = Modifier.padding(2.dp))
-                            Text("200", style = Typography.headlineMedium)
-                        }
 
-                    }
-                    Column(horizontalAlignment = Alignment.End) {
-                        Text("Avg/Day", style = Typography.titleSmall)
-                        Spacer(modifier = Modifier.padding(6.dp))
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text("USD", style = Typography.bodyMedium, color = LabelSecondary)
-                            Spacer(modifier = Modifier.padding(4.dp))
-                            Text("200", style = Typography.headlineMedium)
-                        }
-
-                    }
+            val pagerState = rememberPagerState(pageCount = {
+                when (recurrenceSelected.value) {
+                    Recurrence.Weekly -> 53
+                    Recurrence.Monthly -> 12
+                    Recurrence.Yearly -> 1
+                    else -> 53
                 }
-                Spacer(modifier = Modifier.padding(16.dp))
-                Box(
+            })
+
+            HorizontalPager(state = pagerState, reverseLayout = true) { page ->
+
+                val (start, end, daysInRange) = calculateDateRange(recurrenceSelected.value, page)
+                val filteredExpenses = list.filter { expense ->
+                    (expense.date.toLocalDate().isAfter(start) && expense.date.toLocalDate()
+                        .isBefore(end)) || expense.date.toLocalDate()
+                        .isEqual(start) || expense.date.toLocalDate().isEqual(end)
+                }
+
+                val totalExpensesAmount = filteredExpenses.sumOf { it.amount }
+                val totalInRange = remember { mutableStateOf(totalExpensesAmount) }
+                val avgPerDay: Double = totalExpensesAmount / daysInRange
+
+                Column(
                     modifier = Modifier
-                        .height(200.dp)
-                        .fillMaxWidth()
-                        .background(Color.Black)
+                        .padding(innerPadding)
+                        .padding(16.dp)
+                        .fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    when (recurrenceSelected.value) {
-                        Recurrence.Weekly -> {
-                            WeeklyChart(expenses = list)
-                        }
-
-                        Recurrence.Monthly -> {
-                            MonthlyChart(
-                                expenses = list,
-                                LocalDate.now()
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Column {
+                            Text(
+                                "${start.formatDayForRange()} - ${end.formatDayForRange()}",
+                                style = Typography.titleSmall
                             )
-                        }
+                            Spacer(modifier = Modifier.padding(6.dp))
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Text("USD", style = Typography.bodyMedium, color = LabelSecondary)
+                                Spacer(modifier = Modifier.padding(2.dp))
+                                Text(
+                                    DecimalFormat("0.#").format(totalInRange.value),
+                                    style = Typography.headlineMedium
+                                )
+                            }
 
-                        Recurrence.Yearly -> {
-                            YearlyChart(expenses = list)
                         }
+                        Column(horizontalAlignment = Alignment.End) {
+                            Text("Avg/Day", style = Typography.titleSmall)
+                            Spacer(modifier = Modifier.padding(6.dp))
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Text("USD", style = Typography.bodyMedium, color = LabelSecondary)
+                                Spacer(modifier = Modifier.padding(4.dp))
+                                Text(
+                                    DecimalFormat("0.#").format(avgPerDay),
+                                    style = Typography.headlineMedium
+                                )
+                            }
 
-                        else -> {}
+                        }
                     }
-                }
-                Spacer(modifier = Modifier.padding(4.dp))
+                    Spacer(modifier = Modifier.padding(16.dp))
+                    Box(
+                        modifier = Modifier
+                            .height(200.dp)
+                            .fillMaxWidth()
+                            .background(Color.Black)
+                    ) {
+                        when (recurrenceSelected.value) {
+                            Recurrence.Weekly -> {
+                                WeeklyChart(expenses = filteredExpenses)
+                            }
 
-                ExpensesList(
-                    expenses = list, modifier = Modifier
-                        .weight(1f)
-                        .verticalScroll(
-                            rememberScrollState()
-                        )
-                )
+                            Recurrence.Monthly -> {
+                                MonthlyChart(
+                                    expenses = filteredExpenses,
+                                    LocalDate.now()
+                                )
+                            }
+
+                            Recurrence.Yearly -> {
+                                YearlyChart(expenses = filteredExpenses)
+                            }
+
+                            else -> {}
+                        }
+
+                    }
+
+                    Spacer(modifier = Modifier.padding(4.dp))
+
+                    ExpensesList(
+                        expenses = filteredExpenses, modifier = Modifier
+                            .weight(1f)
+                            .verticalScroll(
+                                rememberScrollState()
+                            )
+                    )
+                }
             }
+
         }
     )
 }
