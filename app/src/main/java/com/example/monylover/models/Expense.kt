@@ -1,9 +1,13 @@
 package com.example.monylover.models
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import java.time.LocalDate
 import java.time.LocalDateTime
 
-data class Expense (
+@Entity(tableName = "expenses")
+data class Expense(
+    @PrimaryKey(autoGenerate = true) var id: Int = 0,
     val amount: Double,
     val recurrence: Recurrence,
     val date: LocalDateTime,

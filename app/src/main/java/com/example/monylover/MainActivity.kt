@@ -89,7 +89,7 @@ class MainActivity : ComponentActivity() {
                                     .padding(innerPadding),
                                 color = MaterialTheme.colorScheme.background
                             ) {
-                                AddScreen(navController = navController)
+                                AddScreen(navController = navController , context = this@MainActivity)
                             }
                         }
                         composable("setting") {

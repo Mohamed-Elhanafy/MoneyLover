@@ -2,10 +2,12 @@ package com.example.monylover.ui.utils
 
 import com.example.monylover.models.Recurrence
 import java.text.DecimalFormat
+import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
+import java.util.Date
 
 fun simplifyNumber(value: Float): String {
     return when {
@@ -14,6 +16,7 @@ fun simplifyNumber(value: Float): String {
         else -> DecimalFormat("0.#").format(value)
     }
 }
+
 fun LocalDate.formatDayForRange(): String {
     val today = LocalDate.now()
     val yesterday = today.minusDays(1)
@@ -24,11 +27,17 @@ fun LocalDate.formatDayForRange(): String {
     }
 }
 
+fun formatDate(date: LocalDateTime?): String {
+    val formatter = SimpleDateFormat("dd-MM-yyyy")
+    return formatter.format(date)
+}
+
 data class DateRangeData(
     val start: LocalDate,
     val end: LocalDate,
     val daysInRange: Int
 )
+
 fun calculateDateRange(recurrence: Recurrence, page: Int): DateRangeData {
     val today = LocalDate.now()
     lateinit var start: LocalDate
@@ -40,6 +49,7 @@ fun calculateDateRange(recurrence: Recurrence, page: Int): DateRangeData {
             start = LocalDate.now().minusDays(page.toLong())
             end = start
         }
+
         Recurrence.Weekly -> {
             start =
                 LocalDate.now().minusDays(today.dayOfWeek.value.toLong() - 1)
@@ -47,6 +57,7 @@ fun calculateDateRange(recurrence: Recurrence, page: Int): DateRangeData {
             end = start.plusDays(6)
             daysInRange = 7
         }
+
         Recurrence.Monthly -> {
             start =
                 LocalDate.of(today.year, today.month, 1)
@@ -56,11 +67,13 @@ fun calculateDateRange(recurrence: Recurrence, page: Int): DateRangeData {
             end = start.plusDays(numberOfDays.toLong())
             daysInRange = numberOfDays
         }
+
         Recurrence.Yearly -> {
             start = LocalDate.of(today.year, 1, 1)
             end = LocalDate.of(today.year, 12, 31)
             daysInRange = 365
         }
+
         else -> Unit
     }
 

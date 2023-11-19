@@ -1,5 +1,6 @@
 package com.example.monylover.ui.screens
 
+import android.content.Context
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -42,8 +43,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.monylover.data.db.RoomDb
 import com.example.monylover.ui.components.dialogs.MyDatePickerDialog
 import com.example.monylover.ui.components.TableRow
 import com.example.monylover.ui.components.UnstyledTextField
@@ -54,10 +57,12 @@ import com.example.monylover.ui.theme.Primary
 import com.example.monylover.ui.theme.Shapes
 import com.example.monylover.ui.theme.TopAppBarBackground
 import com.example.monylover.viewmodels.AddViewModel
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddScreen(navController: NavController, addViewmodel: AddViewModel = AddViewModel()) {
+fun AddScreen(navController: NavController, addViewmodel: AddViewModel = AddViewModel() , context: Context) {
     val state by addViewmodel.uiState.collectAsState()
 
     val recurrence = listOf(
@@ -70,6 +75,12 @@ fun AddScreen(navController: NavController, addViewmodel: AddViewModel = AddView
 
     val categoriesOptions = listOf("groceries", "transportation", "entertainment", "bills", "other")
 
+    val database = RoomDb.getDatabase(context)
+
+    fun LocalDateTime.format(): String {
+        val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+        return this.format(formatter)
+    }
     Scaffold(
         topBar = {
             MediumTopAppBar(
@@ -159,7 +170,7 @@ fun AddScreen(navController: NavController, addViewmodel: AddViewModel = AddView
                             modifier = Modifier.height(20.dp)
                         ) {
                             Text(
-                                text = state.date ?: "Select date"
+                                text = state.date?.format() ?: "Select date"
                             )
 
                         }
@@ -228,7 +239,9 @@ fun AddScreen(navController: NavController, addViewmodel: AddViewModel = AddView
                 }
 
                 Button(
-                    onClick = { /*TODO*/ },
+                    onClick = {
+                        addViewmodel.submitExpense(database)
+                    },
                     modifier = Modifier
                         .padding(16.dp),
                     shape = Shapes.medium
@@ -246,6 +259,6 @@ fun AddScreen(navController: NavController, addViewmodel: AddViewModel = AddView
 @Composable
 fun AddPreview() {
     MonyLoverTheme {
-        AddScreen(navController = rememberNavController())
+
     }
 }
