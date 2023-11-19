@@ -1,6 +1,7 @@
 package com.example.monylover.viewmodels
 
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.monylover.data.db.RoomDb
@@ -80,13 +81,13 @@ class AddViewModel() : ViewModel() {
 
     fun submitExpense(database:RoomDb) {
         viewModelScope.launch(Dispatchers.IO) {
-            database.expensesDao().insertExpense(
+            database.databaseDao().insertExpense(
                 Expense(
                     amount = uiState.value.amount.toDouble(),
                     recurrence = uiState.value.recurrence,
                     date = uiState.value.date!!,
                     note = uiState.value.note,
-                    category = Category(uiState.value.category!!, Color.White),
+                    category = Category(name = uiState.value.category!!, color = Color.White.toArgb()),
                 )
             )
         }

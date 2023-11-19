@@ -109,7 +109,7 @@ class MainActivity : ComponentActivity() {
                                     .fillMaxSize()
                                     .padding(innerPadding),
                             ) {
-                                Categories(navController = navController)
+                                Categories(navController = navController,context= this@MainActivity)
                             }
                         }
                     }

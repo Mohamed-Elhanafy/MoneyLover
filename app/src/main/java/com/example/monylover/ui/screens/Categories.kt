@@ -1,5 +1,6 @@
 package com.example.monylover.ui.screens
 
+import android.content.Context
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
@@ -44,6 +45,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.monylover.data.db.RoomDb
 import com.example.monylover.ui.components.dialogs.ColorPickerDialog
 import com.example.monylover.ui.components.TableRow
 import com.example.monylover.ui.components.UnstyledTextField
@@ -58,10 +60,12 @@ import com.example.monylover.viewmodels.CategoriesViewModel
 @Composable
 fun Categories(
     navController: NavController,
-    viewmodel: CategoriesViewModel = CategoriesViewModel()
+    viewmodel: CategoriesViewModel = CategoriesViewModel(),
+    context: Context
 ) {
     val uiState by viewmodel.uiState.collectAsState()
 
+    val database = RoomDb.getDatabase(context)
     var categories =
         remember { mutableStateListOf<CategoriesState>(
             CategoriesState("food", Color(0xFFEF5350)) ,
@@ -215,6 +219,7 @@ fun Categories(
                                     uiState.newCategoryColor
                                 )
                             )
+                            viewmodel.onAddCategoryClick(database)
 
                             Log.i("TAG", "categories: ${categories.size}")
                         },
@@ -237,9 +242,3 @@ fun Categories(
 
 }
 
-
-@Preview(showSystemUi = true, uiMode = UI_MODE_NIGHT_YES)
-@Composable
-fun PreviewCategories() {
-    Categories(navController = rememberNavController())
-}

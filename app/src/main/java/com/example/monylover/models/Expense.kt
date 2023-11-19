@@ -2,10 +2,13 @@ package com.example.monylover.models
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.TypeConverters
+import com.example.monylover.data.db.Converters
 import java.time.LocalDate
 import java.time.LocalDateTime
 
 @Entity(tableName = "expenses")
+@TypeConverters(Converters::class)
 data class Expense(
     @PrimaryKey(autoGenerate = true) var id: Int = 0,
     val amount: Double,
