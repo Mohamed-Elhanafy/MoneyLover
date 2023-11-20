@@ -25,6 +25,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -37,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.monylover.R
+import com.example.monylover.data.db.RoomDb
 import com.example.monylover.models.Category
 import com.example.monylover.models.Expense
 import com.example.monylover.models.Recurrence
@@ -50,6 +53,7 @@ import com.example.monylover.ui.theme.TopAppBarBackground
 import com.example.monylover.ui.theme.Typography
 import com.example.monylover.ui.utils.calculateDateRange
 import com.example.monylover.ui.utils.formatDayForRange
+import com.example.monylover.viewmodels.ReportsViewModel
 import java.text.DecimalFormat
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -58,7 +62,14 @@ import kotlin.random.Random
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
-fun ReportsScreen(navController: NavController) {
+fun ReportsScreen(
+    navController: NavController,
+    database: RoomDb,
+    viewmodel: ReportsViewModel = ReportsViewModel()
+) {
+
+    val uiState by viewmodel.uiState.collectAsState()
+    viewmodel.getExpenses(database)
 
     val recurrence: Recurrence = Recurrence.Weekly
     var menuOpened = remember { mutableStateOf(false) }
@@ -70,57 +81,6 @@ fun ReportsScreen(navController: NavController) {
         Recurrence.Yearly
     )
 
-
-    val list = remember {
-        listOf(
-            Expense(
-                amount = 100.0,
-                note = "pizza",
-                date = LocalDateTime.now().minus(
-                    Random.nextInt(300, 345600).toLong(),
-                    ChronoUnit.SECONDS
-                ),
-                recurrence = Recurrence.None,
-                category = Category(
-                    name = "Food",
-                    color = Color(
-                        Random.nextInt(0, 255),
-                        Random.nextInt(0, 255),
-                        Random.nextInt(0, 255)
-                    ).toArgb()
-                )
-            ),
-            Expense(
-                amount = 100.0,
-                note = "Coctail",
-                date = LocalDateTime.now(),
-                recurrence = Recurrence.None,
-                category = Category(
-                    name = "Bills",
-                    color = Color(
-                        Random.nextInt(0, 255),
-                        Random.nextInt(0, 255),
-                        Random.nextInt(0, 255)
-                    ).toArgb()
-                )
-            ),
-            Expense(
-                amount = 104.0,
-                note = "car wash",
-                date = LocalDateTime.now(),
-                recurrence = Recurrence.None,
-                category = Category(
-                    name = "car",
-                    color =  Color(
-                        Random.nextInt(0, 255),
-                        Random.nextInt(0, 255),
-                        Random.nextInt(0, 255)
-                    ).toArgb()
-                )
-            )
-
-        )
-    }
 
     Scaffold(
         topBar = {
@@ -167,7 +127,7 @@ fun ReportsScreen(navController: NavController) {
             HorizontalPager(state = pagerState, reverseLayout = true) { page ->
 
                 val (start, end, daysInRange) = calculateDateRange(recurrenceSelected.value, page)
-                val filteredExpenses = list.filter { expense ->
+                val filteredExpenses = uiState.expanses.filter { expense ->
                     (expense.date.toLocalDate().isAfter(start) && expense.date.toLocalDate()
                         .isBefore(end)) || expense.date.toLocalDate()
                         .isEqual(start) || expense.date.toLocalDate().isEqual(end)
@@ -262,11 +222,3 @@ fun ReportsScreen(navController: NavController) {
     )
 }
 
-
-@Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-fun ReportsScreenPreview() {
-    MonyLoverTheme {
-        ReportsScreen(navController = rememberNavController())
-    }
-}

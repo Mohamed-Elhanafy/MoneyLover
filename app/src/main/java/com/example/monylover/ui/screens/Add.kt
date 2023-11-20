@@ -37,6 +37,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -62,7 +63,11 @@ import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddScreen(navController: NavController, addViewmodel: AddViewModel = AddViewModel() , database: RoomDb) {
+fun AddScreen(
+    navController: NavController,
+    addViewmodel: AddViewModel = AddViewModel(),
+    database: RoomDb
+) {
     val state by addViewmodel.uiState.collectAsState()
 
     val recurrence = listOf(
@@ -73,7 +78,7 @@ fun AddScreen(navController: NavController, addViewmodel: AddViewModel = AddView
         Recurrence.Yearly
     )
 
-    val categoriesOptions = listOf("groceries", "transportation", "entertainment", "bills", "other")
+    addViewmodel.getCategories(database = database)
 
 
 
@@ -131,7 +136,7 @@ fun AddScreen(navController: NavController, addViewmodel: AddViewModel = AddView
                                 text = state.recurrence.name,
                                 textAlign = TextAlign.End,
 
-                            )
+                                )
                             DropdownMenu(
                                 expanded = recurrenceMenuExpanded,
                                 onDismissRequest = { recurrenceMenuExpanded = false }) {
@@ -212,20 +217,21 @@ fun AddScreen(navController: NavController, addViewmodel: AddViewModel = AddView
                             modifier = Modifier.height(20.dp)
                         ) {
                             Text(
-                                state.category ?: "Select category",
+                                state.category.name
                             )
                             DropdownMenu(expanded = categoriesMenuOpened,
                                 onDismissRequest = { categoriesMenuOpened = false }) {
-                                categoriesOptions?.forEach { category ->
+                                state.categories?.forEach { category ->
                                     DropdownMenuItem(text = {
                                         Row(verticalAlignment = Alignment.CenterVertically) {
                                             Surface(
                                                 modifier = Modifier.size(10.dp),
                                                 shape = CircleShape,
-                                                color = Primary
+                                                color = Color(category.color)
                                             ) {}
                                             Text(
-                                                category, modifier = Modifier.padding(start = 8.dp)
+                                                category.name,
+                                                modifier = Modifier.padding(start = 8.dp)
                                             )
                                         }
                                     }, onClick = {
@@ -240,7 +246,7 @@ fun AddScreen(navController: NavController, addViewmodel: AddViewModel = AddView
 
                 Button(
                     onClick = {
-                        addViewmodel.submitExpense(database)
+                        addViewmodel.submitExpense(database = database)
                     },
                     modifier = Modifier
                         .padding(16.dp),

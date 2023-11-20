@@ -6,19 +6,25 @@ import androidx.room.TypeConverter
 import androidx.room.TypeConverters
 import com.example.monylover.models.Category
 import com.example.monylover.models.Recurrence
+import com.example.monylover.models.RecurrenceTypeAdapter
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import java.time.LocalDateTime
 
 
 class Converters {
+    private val gson: Gson = GsonBuilder()
+        .registerTypeAdapter(Recurrence::class.java, RecurrenceTypeAdapter())
+        .create()
+
     @TypeConverter
     fun fromRecurrenceToGson(recurrence: Recurrence): String {
-        return Gson().toJson(recurrence)
+        return gson.toJson(recurrence)
     }
 
     @TypeConverter
     fun fromGsonToRecurrence(recurrence: String): Recurrence {
-        return Gson().fromJson(recurrence, Recurrence::class.java)
+        return gson.fromJson(recurrence, Recurrence::class.java)
     }
 
 

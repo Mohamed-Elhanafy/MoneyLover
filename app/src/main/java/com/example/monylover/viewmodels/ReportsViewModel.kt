@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.monylover.data.db.RoomDb
 import com.example.monylover.models.Expense
-import com.example.monylover.models.Recurrence
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -12,27 +11,20 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-data class ExpansesState(
-    val recurrence: Recurrence = Recurrence.None,
-    val sumTotal: Double = 0.0,
+data class ReportsState(
     val expanses: List<Expense> = listOf()
 )
+class ReportsViewModel:ViewModel() {
 
-class ExpansesViewModel : ViewModel() {
-    private val _uiState = MutableStateFlow(ExpansesState())
-    val uiState : StateFlow<ExpansesState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(ReportsState())
+    val uiState: StateFlow<ReportsState> = _uiState.asStateFlow()
+
 
     fun getExpenses(database: RoomDb) {
         viewModelScope.launch(Dispatchers.IO) {
             _uiState.update {currentState ->
-                currentState.copy(expanses = database.databaseDao().getAllExpenses())
+                currentState.copy(database.databaseDao().getAllExpenses())
             }
         }
     }
-    fun setRecurrence(recurrence: Recurrence) {
-        _uiState.update {
-            it.copy(recurrence = recurrence)
-        }
-    }
-
 }

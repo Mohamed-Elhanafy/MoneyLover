@@ -14,20 +14,36 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 data class AddScreenState(
     val amount: String = "0",
     val recurrence: Recurrence = Recurrence.None,
-    val date: LocalDateTime? = null,
+    val date: LocalDateTime = LocalDateTime.now(),
     val note: String = "",
-    val category: String? = null, // TODO: Change to Category when build category model
+    val category: Category = Category(),
+    val categories: List<Category> = listOf(),
 )
 
 class AddViewModel() : ViewModel() {
 
     private val _uiState = MutableStateFlow(AddScreenState())
     val uiState: StateFlow<AddScreenState> = _uiState.asStateFlow()
+
+
+    fun getCategories(database: RoomDb) {
+        viewModelScope.launch(Dispatchers.IO) {
+            _uiState.update { currentState ->
+                currentState.copy(
+                    categories = database.databaseDao().getAllCategories()
+                )
+
+            }
+
+        }
+    }
+
 
     fun setAmount(amount: String) {
         var parsed = amount.toDoubleOrNull()
@@ -69,7 +85,7 @@ class AddViewModel() : ViewModel() {
         }
     }
 
-    fun setCategory(category: String) {
+    fun setCategory(category: Category) {
         _uiState.update { currentState ->
             currentState.copy(
                 category = category,
@@ -78,18 +94,19 @@ class AddViewModel() : ViewModel() {
     }
 
 
-
-    fun submitExpense(database:RoomDb) {
+    fun submitExpense(database: RoomDb) {
         viewModelScope.launch(Dispatchers.IO) {
             database.databaseDao().insertExpense(
                 Expense(
                     amount = uiState.value.amount.toDouble(),
                     recurrence = uiState.value.recurrence,
-                    date = uiState.value.date!!,
+                    date = uiState.value.date,
                     note = uiState.value.note,
-                    category = Category(name = uiState.value.category!!, color = Color.White.toArgb()),
+                    category = uiState.value.category,
                 )
             )
+
+
         }
     }
 }
