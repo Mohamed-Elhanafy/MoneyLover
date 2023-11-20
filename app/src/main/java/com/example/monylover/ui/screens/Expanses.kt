@@ -67,7 +67,7 @@ fun ExpanseScreen(
             recurrence = Recurrence.None,
             category = Category(
                 name = "Food",
-                Color(
+                color = Color(
                     Random.nextInt(0, 255),
                     Random.nextInt(0, 255),
                     Random.nextInt(0, 255)
@@ -81,7 +81,7 @@ fun ExpanseScreen(
             recurrence = Recurrence.None,
             category = Category(
                 name = "Bills",
-                Color(
+                color =  Color(
                     Random.nextInt(0, 255),
                     Random.nextInt(0, 255),
                     Random.nextInt(0, 255)
@@ -95,7 +95,7 @@ fun ExpanseScreen(
             recurrence = Recurrence.None,
             category = Category(
                 name = "car",
-                Color(
+                color =   Color(
                     Random.nextInt(0, 255),
                     Random.nextInt(0, 255),
                     Random.nextInt(0, 255)

@@ -62,7 +62,7 @@ import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddScreen(navController: NavController, addViewmodel: AddViewModel = AddViewModel() , context: Context) {
+fun AddScreen(navController: NavController, addViewmodel: AddViewModel = AddViewModel() , database: RoomDb) {
     val state by addViewmodel.uiState.collectAsState()
 
     val recurrence = listOf(
@@ -75,7 +75,7 @@ fun AddScreen(navController: NavController, addViewmodel: AddViewModel = AddView
 
     val categoriesOptions = listOf("groceries", "transportation", "entertainment", "bills", "other")
 
-    val database = RoomDb.getDatabase(context)
+
 
     fun LocalDateTime.format(): String {
         val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
