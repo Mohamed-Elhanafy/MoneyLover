@@ -12,12 +12,25 @@ import java.time.LocalDateTime
 class Converters {
     @TypeConverter
     fun fromRecurrenceToGson(recurrence: Recurrence): String {
-        return Gson().toJson(recurrence)
+        when (recurrence) {
+            is Recurrence.None -> return Gson().toJson(Recurrence.None)
+            is Recurrence.Daily -> return Gson().toJson(Recurrence.Daily)
+            is Recurrence.Weekly -> return Gson().toJson(Recurrence.Weekly)
+            is Recurrence.Monthly -> return Gson().toJson(Recurrence.Monthly)
+            is Recurrence.Yearly -> return Gson().toJson(Recurrence.Yearly)
+        }
     }
 
     @TypeConverter
     fun fromGsonToRecurrence(recurrence: String): Recurrence {
-        return Gson().fromJson(recurrence, Recurrence::class.java)
+        when(recurrence){
+            "None" -> return Gson().fromJson(recurrence, Recurrence.None::class.java)
+            "Daily" -> return Gson().fromJson(recurrence, Recurrence.Daily::class.java)
+            "Weekly" -> return Gson().fromJson(recurrence, Recurrence.Weekly::class.java)
+            "Monthly" -> return Gson().fromJson(recurrence, Recurrence.Monthly::class.java)
+            "Yearly" -> return Gson().fromJson(recurrence, Recurrence.Yearly::class.java)
+            else -> return Gson().fromJson(recurrence, Recurrence.None::class.java)
+        }
     }
 
 /*
@@ -63,4 +76,6 @@ class Converters {
     fun fromGsonToColor(color: Int): Color {
         return Color(color)
     }
+
+
 }

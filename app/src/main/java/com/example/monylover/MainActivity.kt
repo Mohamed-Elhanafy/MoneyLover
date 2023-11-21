@@ -83,7 +83,7 @@ class MainActivity : ComponentActivity() {
                                     .padding(innerPadding),
                                 color = MaterialTheme.colorScheme.background
                             ) {
-                                ReportsScreen(navController = navController)
+                                ReportsScreen(navController = navController , database = database)
                             }
                         }
                         composable("add") {

@@ -104,7 +104,7 @@ class AddViewModel() : ViewModel() {
                     note = uiState.value.note,
                     category = Category(
                         name = uiState.value.category.name,
-                        color = Color.White.toArgb()
+                        color = uiState.value.category.color
                     ),
                 )
             )
