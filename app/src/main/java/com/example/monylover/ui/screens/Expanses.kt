@@ -19,6 +19,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -30,6 +31,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.monylover.data.db.RoomDb
 
 import com.example.monylover.models.Category
 import com.example.monylover.models.Expense
@@ -40,6 +42,7 @@ import com.example.monylover.ui.theme.LabelSecondary
 import com.example.monylover.ui.theme.MonyLoverTheme
 import com.example.monylover.ui.theme.TopAppBarBackground
 import com.example.monylover.ui.theme.Typography
+import com.example.monylover.ui.utils.calculateDateRange
 import com.example.monylover.viewmodels.ExpansesViewModel
 import java.text.DecimalFormat
 import java.time.LocalDateTime
@@ -50,60 +53,17 @@ import kotlin.random.Random
 @Composable
 fun ExpanseScreen(
     navController: NavController,
-    expanseViewModel: ExpansesViewModel = ExpansesViewModel()
+    expanseViewModel: ExpansesViewModel = ExpansesViewModel(),
+    database: RoomDb
 ) {
 
     val state by expanseViewModel.uiState.collectAsState()
     var recurrenceMenuExpanded by remember { mutableStateOf(false) }
+    expanseViewModel.getExpanses(database)
 
-    val list = listOf(
-        Expense(
-            amount = 100.0,
-            note = "pizza",
-            date = LocalDateTime.now().minus(
-                Random.nextInt(300, 345600).toLong(),
-                ChronoUnit.SECONDS
-            ),
-            recurrence = Recurrence.None,
-            category = Category(
-                name = "Food",
-                color = Color(
-                    Random.nextInt(0, 255),
-                    Random.nextInt(0, 255),
-                    Random.nextInt(0, 255)
-                ).toArgb()
-            )
-        ),
-        Expense(
-            amount = 100.0,
-            note = "Coctail",
-            date = LocalDateTime.now(),
-            recurrence = Recurrence.None,
-            category = Category(
-                name = "Bills",
-                color = Color(
-                    Random.nextInt(0, 255),
-                    Random.nextInt(0, 255),
-                    Random.nextInt(0, 255)
-                ).toArgb()
-            )
-        ),
-        Expense(
-            amount = 104.0,
-            note = "car wash",
-            date = LocalDateTime.now(),
-            recurrence = Recurrence.None,
-            category = Category(
-                name = "car",
-                color = Color(
-                    Random.nextInt(0, 255),
-                    Random.nextInt(0, 255),
-                    Random.nextInt(0, 255)
-                ).toArgb()
-            )
-        )
 
-    )
+
+
     Scaffold(
         topBar = {
             MediumTopAppBar(
@@ -148,7 +108,8 @@ fun ExpanseScreen(
                                 DropdownMenuItem(
                                     text = { Text(text = label.target) },
                                     onClick = {
-                                        expanseViewModel.setRecurrence(label)
+                                        expanseViewModel.setRecurrence(label , database)
+
                                         recurrenceMenuExpanded = false
                                     })
                             }
@@ -171,8 +132,12 @@ fun ExpanseScreen(
                     )
                 }
 
+
+
+
+
                 ExpensesList(
-                    list, modifier = Modifier
+                    state.expenses, modifier = Modifier
                         .weight(1f)
                         .verticalScroll(
                             rememberScrollState()
@@ -185,6 +150,7 @@ fun ExpanseScreen(
     )
 }
 
+/*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(uiMode = UI_MODE_NIGHT_YES, showBackground = true)
@@ -193,4 +159,4 @@ fun ExpanseScreenPreview() {
     MonyLoverTheme {
         ExpanseScreen(navController = rememberNavController())
     }
-}
+}*/

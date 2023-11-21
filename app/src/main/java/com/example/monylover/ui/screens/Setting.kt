@@ -15,19 +15,26 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.monylover.Greeting
+import com.example.monylover.data.db.RoomDb
 import com.example.monylover.ui.components.TableRow
 import com.example.monylover.ui.theme.BackgroundElevated
 import com.example.monylover.ui.theme.Shapes
 import com.example.monylover.ui.theme.TopAppBarBackground
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope.coroutineContext
+import kotlinx.coroutines.launch
+import kotlin.coroutines.coroutineContext
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingScreen(navController: NavController) {
+fun SettingScreen(navController: NavController , database: RoomDb , viewmodel: SettingViewModel = SettingViewModel()) {
+
     Scaffold(
         topBar = {
             MediumTopAppBar(
@@ -54,7 +61,9 @@ fun SettingScreen(navController: NavController) {
                         }
                     })
                     Divider(Modifier.padding(start = 16.dp, end = 16.dp))
-                    TableRow(label = "erase all data", isDestructive = true)
+                    TableRow(label = "erase all data", isDestructive = true , onClick = {
+                        viewmodel.deleteAllData(database)
+                    })
                 }
             }
         }

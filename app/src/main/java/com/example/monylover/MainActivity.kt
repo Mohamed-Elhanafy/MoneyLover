@@ -72,7 +72,7 @@ class MainActivity : ComponentActivity() {
                                     .padding(innerPadding),
                                 color = MaterialTheme.colorScheme.background
                             ) {
-                                ExpanseScreen(navController = navController)
+                                ExpanseScreen(navController = navController , database = database)
                             }
                         }
                         composable("reports") {
@@ -105,7 +105,7 @@ class MainActivity : ComponentActivity() {
                                     .padding(innerPadding),
                                 color = MaterialTheme.colorScheme.background
                             ) {
-                                SettingScreen(navController = navController)
+                                SettingScreen(navController = navController , database = database)
                             }
                         }
                         composable("setting/categories") {
