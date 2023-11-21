@@ -50,18 +50,21 @@ MoneyLover is a simple expense tracking application that helps you manage your f
 
  4. **Contributing:**
 
--Fork the repository.
--Create a new branch for your feature: git checkout -b feature-name.
--Commit your changes: git commit -m 'Add some feature'.
--Push to the branch: git push origin feature-name.
--Submit a pull request.
+- Fork the repository.
+- Create a new branch for your feature: git checkout -b feature-name. 
+- Commit your changes: git commit -m 'Add some feature'.
+- Push to the branch: git push origin feature-name.
+- Submit a pull request.
 
 ## Tech Stack
--Kotlin
--Android Jetpack (Compose, ViewModel, Room)
--SQLite Database (room DataBase)
--Gradle
--License
+
+- Kotlin 
+- Android Jetpack (Compose, ViewModel, Room)
+- SQLite Database (room DataBase) 
+- Gradle 
+ ## License
+  This project is licensed under the MIT License - see the LICENSE file for details.
+
 This project is licensed under the MIT License - see the LICENSE file for details.
 
 Acknowledgments
