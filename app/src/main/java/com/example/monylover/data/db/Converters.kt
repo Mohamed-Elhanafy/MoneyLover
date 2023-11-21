@@ -3,7 +3,6 @@ package com.example.monylover.data.db
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.room.TypeConverter
-import androidx.room.TypeConverters
 import com.example.monylover.models.Category
 import com.example.monylover.models.Recurrence
 import com.google.gson.Gson
@@ -21,7 +20,7 @@ class Converters {
         return Gson().fromJson(recurrence, Recurrence::class.java)
     }
 
-
+/*
     @TypeConverter
     fun fromLocalDateTimeToGson(localDateTime: LocalDateTime): String {
         return Gson().toJson(localDateTime)
@@ -30,9 +29,21 @@ class Converters {
     @TypeConverter
     fun fromGsonToLocalDateTime(localDateTime: String): LocalDateTime {
         return Gson().fromJson(localDateTime, LocalDateTime::class.java)
+    }*/
+
+    @TypeConverter
+    fun toDate(dateString: String?): LocalDateTime? {
+        return if (dateString == null) {
+            null
+        } else {
+            LocalDateTime.parse(dateString)
+        }
     }
 
-
+    @TypeConverter
+    fun toDateString(date: LocalDateTime?): String? {
+        return date?.toString()
+    }
     @TypeConverter
     fun fromCategoryToGson(category: Category): String {
         return Gson().toJson(category)

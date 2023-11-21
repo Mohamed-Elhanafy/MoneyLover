@@ -23,6 +23,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.monylover.data.db.RoomDb
 import com.example.monylover.ui.components.NavBar
 import com.example.monylover.ui.screens.AddScreen
 import com.example.monylover.ui.screens.Categories
@@ -37,12 +38,16 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+        val database = RoomDb.getInstance(this)
+
         setContent {
             MonyLoverTheme {
 
                 val navController = rememberNavController()
                 val backStackEntry by navController.currentBackStackEntryAsState()
                 var showBottomBar by rememberSaveable { mutableStateOf(true) }
+
+
 
                 showBottomBar = when (backStackEntry?.destination?.route) {
                     "setting/categories" -> false
@@ -89,7 +94,7 @@ class MainActivity : ComponentActivity() {
                                     .padding(innerPadding),
                                 color = MaterialTheme.colorScheme.background
                             ) {
-                                AddScreen(navController = navController , context = this@MainActivity)
+                                AddScreen(navController = navController , database = database)
                             }
                         }
                         composable("setting") {
@@ -109,7 +114,7 @@ class MainActivity : ComponentActivity() {
                                     .fillMaxSize()
                                     .padding(innerPadding),
                             ) {
-                                Categories(navController = navController,context= this@MainActivity)
+                                Categories(navController = navController,database = database)
                             }
                         }
                     }

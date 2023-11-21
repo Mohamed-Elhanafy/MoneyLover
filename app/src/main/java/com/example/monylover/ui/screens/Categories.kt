@@ -3,6 +3,7 @@ package com.example.monylover.ui.screens
 import android.content.Context
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -61,22 +62,12 @@ import com.example.monylover.viewmodels.CategoriesViewModel
 fun Categories(
     navController: NavController,
     viewmodel: CategoriesViewModel = CategoriesViewModel(),
-    context: Context
+    database: RoomDb
 ) {
     val uiState by viewmodel.uiState.collectAsState()
 
-    val database = RoomDb.getDatabase(context)
-    var categories =
-        remember { mutableStateListOf<CategoriesState>(
-            CategoriesState("food", Color(0xFFEF5350)) ,
-            CategoriesState("home", Color(0xFFEC407A)) ,
-            CategoriesState("car", Color(0xFFAB47BC)) ,
-            CategoriesState("health", Color(0xFF7E57C2)) ,
-            CategoriesState("education", Color(0xFF5C6BC0)) ,
 
-        )
 
-        }
 
 
 
@@ -114,7 +105,7 @@ fun Categories(
 
 
                     ) {
-                        items(categories) { category ->
+                        items(uiState.categories) { category ->
 
                             TableRow() {
                                 Row(
@@ -129,7 +120,7 @@ fun Categories(
 
                                 ) {
                                     Surface(
-                                        color = category.newCategoryColor,
+                                        color = Color(category.color),
                                         shape = CircleShape,
                                         border = BorderStroke(
                                             width = 1.dp,
@@ -138,7 +129,7 @@ fun Categories(
                                         modifier = Modifier.size(16.dp)
                                     ) {}
                                     Text(
-                                        category.newCategoryName,
+                                        category.name,
                                         style = Typography.bodyMedium,
                                         modifier = Modifier.padding(
                                             horizontal = 16.dp,
@@ -213,15 +204,11 @@ fun Categories(
 
                     IconButton(
                         onClick = {
-                            categories.add(
-                                CategoriesState(
-                                    uiState.newCategoryName,
-                                    uiState.newCategoryColor
-                                )
-                            )
-                            viewmodel.onAddCategoryClick(database)
+                            if (uiState.newCategoryName.isNotEmpty()){
+                                viewmodel.onAddCategoryClick(database)
 
-                            Log.i("TAG", "categories: ${categories.size}")
+                            }
+
                         },
                         modifier = Modifier
                             .padding(start = 16.dp)

@@ -7,7 +7,7 @@ import androidx.room.TypeConverters
 import com.example.monylover.models.Category
 import com.example.monylover.models.Expense
 
-@Database(entities = [Expense::class ,Category::class ], version = 2)
+@Database(entities = [Expense::class ,Category::class ], version = 1)
 @TypeConverters(Converters::class )
 abstract class RoomDb: RoomDatabase() {
     abstract fun databaseDao(): MyDao
@@ -16,7 +16,7 @@ abstract class RoomDb: RoomDatabase() {
         private const val DATABASE_NAME = "money_lover_database"
 
         private var INSTANCE: RoomDb? = null
-        fun getDatabase(context: Context): RoomDb {
+        fun getInstance(context: Context): RoomDb {
             if (INSTANCE == null) {
                 INSTANCE = androidx.room.Room.databaseBuilder(
                     context.applicationContext,
