@@ -37,24 +37,22 @@ MoneyLover is a simple expense tracking application that helps you manage your f
 </p>
 
 ## Installation
-## Getting Started
 
 1. **Clone the repository:**
    ```bash
    git clone https://github.com/<Your GitHub Username>/MoneyLover.git
    cd MoneyLover
 
-   Build and Run:
+ 2. **Build and Run**
+   - Open the project in Android Studio.
+   - Build and run the application on an emulator or a physical device.
 
-2. **Open the project in Android Studio.**
-  Build and run the application on an emulator or a physical device.
-  Contributing:
-
-3 **Fork the repository.**
-  Create a new branch for your feature: git checkout -b feature-name.
-  Commit your changes: git commit -m 'Add some feature'.
-  Push to the branch: git push origin feature-name.
-  Submit a pull request.
+ 3** Contributing:**
+  -  Fork the repository.
+  -  Create a new branch for your feature: git checkout -b feature-name.
+  -  Commit your changes: git commit -m 'Add some feature'.
+  -  Push to the branch: git push origin feature-name.
+  -  Submit a pull request.
 
 ## Tech Stack
 - Kotlin
