@@ -44,10 +44,12 @@ MoneyLover is a simple expense tracking application that helps you manage your f
    cd MoneyLover
 
  2. **Build and Run**
+
 -Open the project in Android Studio.
 -Build and run the application on an emulator or a physical device.
 
- 3. ** Contributing:**
+ 4. **Contributing:**
+
 -Fork the repository.
 -Create a new branch for your feature: git checkout -b feature-name.
 -Commit your changes: git commit -m 'Add some feature'.
