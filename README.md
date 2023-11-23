@@ -65,7 +65,3 @@ MoneyLover is a simple expense tracking application that helps you manage your f
  ## License
   This project is licensed under the MIT License - see the LICENSE file for details.
 
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-Acknowledgments
-Thanks to Open Source Initiative for the MIT License.
