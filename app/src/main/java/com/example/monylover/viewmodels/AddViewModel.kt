@@ -1,5 +1,6 @@
 package com.example.monylover.viewmodels
 
+import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.ViewModel
@@ -8,6 +9,7 @@ import com.example.monylover.data.db.RoomDb
 import com.example.monylover.models.Category
 import com.example.monylover.models.Expense
 import com.example.monylover.models.Recurrence
+import com.example.monylover.ui.utils.format
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -23,7 +25,9 @@ data class AddScreenState(
     val date: LocalDateTime = LocalDateTime.now(),
     val note: String = "",
     val category: Category = Category(),
-    val categories: List<Category> = listOf(),
+
+    val categoryList: List<Category> = listOf(),
+
 )
 
 class AddViewModel() : ViewModel() {
@@ -32,18 +36,15 @@ class AddViewModel() : ViewModel() {
     val uiState: StateFlow<AddScreenState> = _uiState.asStateFlow()
 
 
-    fun getCategories(database: RoomDb) {
+    fun getCategoryList(database: RoomDb) {
         viewModelScope.launch(Dispatchers.IO) {
             _uiState.update { currentState ->
                 currentState.copy(
-                    categories = database.databaseDao().getAllCategories()
+                    categoryList = database.databaseDao().getAllCategories()
                 )
-
             }
-
         }
     }
-
 
     fun setAmount(amount: String) {
         var parsed = amount.toDoubleOrNull()
@@ -70,12 +71,14 @@ class AddViewModel() : ViewModel() {
     }
 
     fun setDate(date: LocalDateTime) {
+
         _uiState.update { currentState ->
             currentState.copy(
                 date = date,
             )
         }
     }
+
 
     fun setNote(note: String) {
         _uiState.update { currentState ->
@@ -94,15 +97,22 @@ class AddViewModel() : ViewModel() {
     }
 
 
-    fun submitExpense(database: RoomDb) {
+    fun submitExpense(database: RoomDb ) {
+
         viewModelScope.launch(Dispatchers.IO) {
+            Log.i("TAG", "submitExpense: ${uiState.value.date.format()}")
             database.databaseDao().insertExpense(
                 Expense(
                     amount = uiState.value.amount.toDouble(),
                     recurrence = uiState.value.recurrence,
                     date = uiState.value.date,
                     note = uiState.value.note,
-                    category = uiState.value.category,
+
+                    category = Category(
+                        name = uiState.value.category.name,
+                        color = uiState.value.category.color
+                    ),
+
                 )
             )
 

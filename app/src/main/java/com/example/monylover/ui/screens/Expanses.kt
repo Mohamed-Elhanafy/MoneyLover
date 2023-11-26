@@ -19,6 +19,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -37,6 +38,7 @@ import com.example.monylover.ui.theme.LabelSecondary
 import com.example.monylover.ui.theme.MonyLoverTheme
 import com.example.monylover.ui.theme.TopAppBarBackground
 import com.example.monylover.ui.theme.Typography
+import com.example.monylover.ui.utils.calculateDateRange
 import com.example.monylover.viewmodels.ExpansesViewModel
 import java.text.DecimalFormat
 
@@ -44,13 +46,19 @@ import java.text.DecimalFormat
 @Composable
 fun ExpanseScreen(
     navController: NavController,
-    viewModel: ExpansesViewModel = ExpansesViewModel(),
+
+    expanseViewModel: ExpansesViewModel = ExpansesViewModel(),
+
     database: RoomDb
 ) {
 
     val state by viewModel.uiState.collectAsState()
     var recurrenceMenuExpanded by remember { mutableStateOf(false) }
-    viewModel.getExpenses(database)
+
+    expanseViewModel.getExpanses(database)
+
+
+
 
     Scaffold(
         topBar = {
@@ -96,7 +104,9 @@ fun ExpanseScreen(
                                 DropdownMenuItem(
                                     text = { Text(text = label.target) },
                                     onClick = {
-                                        viewModel.setRecurrence(label)
+                                        expanseViewModel.setRecurrence(label , database)
+
+
                                         recurrenceMenuExpanded = false
                                     })
                             }
@@ -119,8 +129,13 @@ fun ExpanseScreen(
                     )
                 }
 
+
+
+
+
                 ExpensesList(
-                    state.expanses, modifier = Modifier
+                    state.expenses, modifier = Modifier
+
                         .weight(1f)
                         .verticalScroll(
                             rememberScrollState()
@@ -132,4 +147,5 @@ fun ExpanseScreen(
         }
     )
 }
+
 

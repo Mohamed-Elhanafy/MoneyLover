@@ -39,6 +39,8 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+        val database = RoomDb.getInstance(this)
+
         setContent {
             MonyLoverTheme {
 
@@ -46,7 +48,6 @@ class MainActivity : ComponentActivity() {
                 val backStackEntry by navController.currentBackStackEntryAsState()
                 var showBottomBar by rememberSaveable { mutableStateOf(true) }
 
-                val database = RoomDb.getDatabase(applicationContext)
 
 
                 showBottomBar = when (backStackEntry?.destination?.route) {
@@ -72,7 +73,9 @@ class MainActivity : ComponentActivity() {
                                     .padding(innerPadding),
                                 color = MaterialTheme.colorScheme.background
                             ) {
-                                ExpanseScreen(navController = navController, database = database)
+
+                                ExpanseScreen(navController = navController , database = database)
+
                             }
                         }
                         composable("reports") {
@@ -83,7 +86,9 @@ class MainActivity : ComponentActivity() {
                                     .padding(innerPadding),
                                 color = MaterialTheme.colorScheme.background
                             ) {
-                                ReportsScreen(navController = navController, database = database)
+
+                                ReportsScreen(navController = navController , database = database)
+
                             }
                         }
                         composable("add") {
@@ -94,7 +99,9 @@ class MainActivity : ComponentActivity() {
                                     .padding(innerPadding),
                                 color = MaterialTheme.colorScheme.background
                             ) {
-                                AddScreen(navController = navController, database = database)
+
+                                AddScreen(navController = navController , database = database)
+
                             }
                         }
                         composable("setting") {
@@ -105,7 +112,7 @@ class MainActivity : ComponentActivity() {
                                     .padding(innerPadding),
                                 color = MaterialTheme.colorScheme.background
                             ) {
-                                SettingScreen(navController = navController)
+                                SettingScreen(navController = navController , database = database)
                             }
                         }
                         composable("setting/categories") {
@@ -114,7 +121,9 @@ class MainActivity : ComponentActivity() {
                                     .fillMaxSize()
                                     .padding(innerPadding),
                             ) {
-                                Categories(navController = navController, database = database)
+
+                                Categories(navController = navController,database = database)
+
                             }
                         }
                     }

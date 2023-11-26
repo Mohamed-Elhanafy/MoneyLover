@@ -16,7 +16,10 @@ fun simplifyNumber(value: Float): String {
         else -> DecimalFormat("0.#").format(value)
     }
 }
-
+fun LocalDateTime.format(): String {
+    val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+    return this.format(formatter)
+}
 fun LocalDate.formatDayForRange(): String {
     val today = LocalDate.now()
     val yesterday = today.minusDays(1)

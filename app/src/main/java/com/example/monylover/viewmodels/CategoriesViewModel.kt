@@ -69,6 +69,7 @@ class CategoriesViewModel : ViewModel() {
         }
     }
 
+
     fun onAddCategoryClick(database: RoomDb) {
         viewModelScope.launch(Dispatchers.IO) {
             database.databaseDao().insertCategory(
@@ -77,12 +78,15 @@ class CategoriesViewModel : ViewModel() {
                     color = uiState.value.newCategoryColor.toArgb()
                 )
             )
+
             _uiState.update { currentState ->
                 currentState.copy(
                     categories = database.databaseDao().getAllCategories()
                 )
             }
         }
+
+
     }
 
     fun deleteCategory(category: Category, database: RoomDb) {

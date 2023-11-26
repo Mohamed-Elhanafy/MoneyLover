@@ -27,6 +27,9 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+
+import androidx.compose.runtime.mutableDoubleStateOf
+
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -62,24 +65,23 @@ import kotlin.random.Random
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
-fun ReportsScreen(
-    navController: NavController,
-    database: RoomDb,
-    viewmodel: ReportsViewModel = ReportsViewModel()
-) {
 
-    val uiState by viewmodel.uiState.collectAsState()
-    viewmodel.getExpenses(database)
+fun ReportsScreen(navController: NavController , database:RoomDb , viewmodel: ReportsViewModel = ReportsViewModel()) {
+
 
     val recurrence: Recurrence = Recurrence.Weekly
     var menuOpened = remember { mutableStateOf(false) }
     var recurrenceSelected = remember { mutableStateOf(recurrence) }
 
+    val state by viewmodel.uiState.collectAsState()
+
+    viewmodel.getExpanses(database)
     val recurrences = listOf(
         Recurrence.Weekly,
         Recurrence.Monthly,
         Recurrence.Yearly
     )
+
 
 
     Scaffold(
@@ -127,14 +129,16 @@ fun ReportsScreen(
             HorizontalPager(state = pagerState, reverseLayout = true) { page ->
 
                 val (start, end, daysInRange) = calculateDateRange(recurrenceSelected.value, page)
-                val filteredExpenses = uiState.expanses.filter { expense ->
+
+                val filteredExpenses = state.expansesList.filter { expense ->
+
                     (expense.date.toLocalDate().isAfter(start) && expense.date.toLocalDate()
                         .isBefore(end)) || expense.date.toLocalDate()
                         .isEqual(start) || expense.date.toLocalDate().isEqual(end)
                 }
 
                 val totalExpensesAmount = filteredExpenses.sumOf { it.amount }
-                val totalInRange = remember { mutableStateOf(totalExpensesAmount) }
+                val totalInRange = remember { mutableDoubleStateOf(totalExpensesAmount) }
                 val avgPerDay: Double = totalExpensesAmount / daysInRange
 
                 Column(
@@ -158,7 +162,7 @@ fun ReportsScreen(
                                 Text("USD", style = Typography.bodyMedium, color = LabelSecondary)
                                 Spacer(modifier = Modifier.padding(2.dp))
                                 Text(
-                                    DecimalFormat("0.#").format(totalInRange.value),
+                                    DecimalFormat("0.#").format(totalExpensesAmount),
                                     style = Typography.headlineMedium
                                 )
                             }
@@ -221,4 +225,5 @@ fun ReportsScreen(
         }
     )
 }
+
 

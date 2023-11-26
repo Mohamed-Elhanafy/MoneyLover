@@ -40,7 +40,9 @@ fun MyDatePickerDialog(
         onDismissRequest = { onDismiss() },
         confirmButton = {
             Button(onClick = {
-                onDateSelected(selectedDate!!)
+                selectedDate?.let {
+                    onDateSelected(it)
+                }
                 onDismiss()
             }
 

@@ -1,12 +1,9 @@
 package com.example.monylover.models
 
-import com.google.gson.TypeAdapter
-import com.google.gson.annotations.JsonAdapter
-import com.google.gson.stream.JsonReader
-import com.google.gson.stream.JsonToken
-import com.google.gson.stream.JsonWriter
+import androidx.room.Entity
 
-@JsonAdapter(RecurrenceTypeAdapter::class)
+
+@Entity(tableName = "recurrence")
 
 sealed class Recurrence(val name: String, val target: String) {
         object None : Recurrence("None", "None")

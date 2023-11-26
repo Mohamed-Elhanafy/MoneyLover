@@ -3,6 +3,7 @@ package com.example.monylover.ui.screens
 import android.content.Context
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -203,10 +204,11 @@ fun Categories(
 
                     IconButton(
                         onClick = {
+                            if (uiState.newCategoryName.isNotEmpty()){
+                                viewmodel.onAddCategoryClick(database)
 
-                            viewmodel.onAddCategoryClick(database)
+                            }
 
-                            Log.i("TAG", "categories: ${uiState.categories.size}")
                         },
                         modifier = Modifier
                             .padding(start = 16.dp)

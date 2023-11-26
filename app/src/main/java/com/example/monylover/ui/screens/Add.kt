@@ -47,6 +47,7 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import androidx.room.Room
 import com.example.monylover.data.db.RoomDb
 import com.example.monylover.ui.components.dialogs.MyDatePickerDialog
 import com.example.monylover.ui.components.TableRow
@@ -57,6 +58,7 @@ import com.example.monylover.ui.theme.MonyLoverTheme
 import com.example.monylover.ui.theme.Primary
 import com.example.monylover.ui.theme.Shapes
 import com.example.monylover.ui.theme.TopAppBarBackground
+import com.example.monylover.ui.utils.format
 import com.example.monylover.viewmodels.AddViewModel
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -64,199 +66,193 @@ import java.time.format.DateTimeFormatter
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddScreen(
-    navController: NavController,
-    addViewmodel: AddViewModel = AddViewModel(),
-    database: RoomDb
+
+    navController: NavController, addViewmodel: AddViewModel = AddViewModel(), database: RoomDb
+
 ) {
     val state by addViewmodel.uiState.collectAsState()
 
     val recurrence = listOf(
-        Recurrence.None,
-        Recurrence.Daily,
-        Recurrence.Weekly,
-        Recurrence.Monthly,
-        Recurrence.Yearly
+        Recurrence.None, Recurrence.Daily, Recurrence.Weekly, Recurrence.Monthly, Recurrence.Yearly
     )
 
-    addViewmodel.getCategories(database = database)
+
+    addViewmodel.getCategoryList(database = database)
 
 
 
-    fun LocalDateTime.format(): String {
-        val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
-        return this.format(formatter)
-    }
-    Scaffold(
-        topBar = {
-            MediumTopAppBar(
-                title = { Text(text = "Add") },
-                colors = TopAppBarDefaults.mediumTopAppBarColors(
-                    containerColor = TopAppBarBackground,
-                )
+
+    Scaffold(topBar = {
+        MediumTopAppBar(
+            title = { Text(text = "Add") }, colors = TopAppBarDefaults.mediumTopAppBarColors(
+                containerColor = TopAppBarBackground,
             )
-        },
-        content = { innerPadding ->
+        )
+    }, content = { innerPadding ->
+        Column(
+            modifier = Modifier.padding(innerPadding),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
             Column(
-                modifier = Modifier.padding(innerPadding),
-                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .padding(16.dp)
+                    .clip(Shapes.large)
+                    .fillMaxWidth()
+                    .background(BackgroundElevated)
+
             ) {
-                Column(
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .clip(Shapes.large)
-                        .fillMaxWidth()
-                        .background(BackgroundElevated)
-
-                ) {
-                    TableRow(label = "Amount", detailContent = {
-                        UnstyledTextField(
-                            value = state.amount,
-                            onValueChange = { addViewmodel.setAmount(it) },
-                            modifier = Modifier.fillMaxWidth(),
-                            placeholder = { Text("0") },
-                            arrangement = Arrangement.End,
-                            maxLines = 1,
-                            textStyle = TextStyle(
-                                textAlign = TextAlign.Right,
-                            ),
-                            keyboardOptions = KeyboardOptions(
-                                keyboardType = KeyboardType.Number,
-                            )
+                TableRow(label = "Amount", detailContent = {
+                    UnstyledTextField(
+                        value = state.amount,
+                        onValueChange = { addViewmodel.setAmount(it) },
+                        modifier = Modifier.fillMaxWidth(),
+                        placeholder = { Text("0") },
+                        arrangement = Arrangement.End,
+                        maxLines = 1,
+                        textStyle = TextStyle(
+                            textAlign = TextAlign.Right,
+                        ),
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Number,
                         )
-                    })
-                    Divider(Modifier.padding(start = 16.dp, end = 16.dp))
-                    TableRow(label = "Recurrence") {
-                        var recurrenceMenuExpanded by remember { mutableStateOf(false) }
-                        TextButton(
-                            onClick = { recurrenceMenuExpanded = true },
-                            contentPadding = PaddingValues(0.dp),
-                            modifier = Modifier.height(18.dp)
-                        ) {
+                    )
+                })
+                Divider(Modifier.padding(start = 16.dp, end = 16.dp))
+                TableRow(label = "Recurrence") {
+                    var recurrenceMenuExpanded by remember { mutableStateOf(false) }
+                    TextButton(
+                        onClick = { recurrenceMenuExpanded = true },
+                        contentPadding = PaddingValues(0.dp),
+                        modifier = Modifier.height(18.dp)
+                    ) {
+                        Text(
+                            text = state.recurrence.name,
+                            textAlign = TextAlign.End,
+                            )
+                        DropdownMenu(expanded = recurrenceMenuExpanded,
+                            onDismissRequest = { recurrenceMenuExpanded = false }) {
+                            recurrence.forEach { label ->
+                                DropdownMenuItem(text = { Text(text = label.name) }, onClick = {
+                                    addViewmodel.setRecurrence(label)
+                                    recurrenceMenuExpanded = false
+                                })
+
+                            }
+                        }
+                    }
+
+                }
+                Divider(Modifier.padding(start = 16.dp, end = 16.dp))
+
+                val showDialog = rememberSaveable { mutableStateOf(false) }
+
+                TableRow(label = "Date", onClick = {
+
+                }) {
+                    if (showDialog.value) {
+                        MyDatePickerDialog(onDateSelected = {
+                            if (it != LocalDateTime.now()) {
+                                addViewmodel.setDate(it)
+
+                            }
+                            showDialog.value = false
+                        }, onDismiss = { showDialog.value = false })
+                    }
+                    TextButton(
+                        onClick = { showDialog.value = true },
+                        shape = Shapes.large,
+                        contentPadding = PaddingValues(0.dp),
+                        modifier = Modifier.height(20.dp)
+                    ) {
+                        Text(
+                            text = state.date?.format() ?: "Select date"
+                        )
+
+                    }
+                }
+
+                Divider(Modifier.padding(start = 16.dp, end = 16.dp))
+                TableRow(label = "Note", detailContent = {
+                    Spacer(modifier = Modifier.weight(1f))
+
+                    UnstyledTextField(
+                        value = state.note,
+                        placeholder = {
                             Text(
-                                text = state.recurrence.name,
+                                "Leave some notes",
+                                fontSize = 14.sp,
                                 textAlign = TextAlign.End,
-
-                                )
-                            DropdownMenu(
-                                expanded = recurrenceMenuExpanded,
-                                onDismissRequest = { recurrenceMenuExpanded = false }) {
-                                recurrence.forEach { label ->
-                                    DropdownMenuItem(
-                                        text = { Text(text = label.name) },
-                                        onClick = {
-                                            addViewmodel.setRecurrence(label)
-                                            recurrenceMenuExpanded = false
-                                        })
-                                }
-                            }
-                        }
-
-                    }
-                    Divider(Modifier.padding(start = 16.dp, end = 16.dp))
-
-                    val showDialog = rememberSaveable { mutableStateOf(false) }
-
-                    TableRow(label = "Date", onClick = {
-
-                    }) {
-                        if (showDialog.value) {
-                            MyDatePickerDialog(
-                                onDateSelected = {
-                                    addViewmodel.setDate(it)
-                                    showDialog.value = false
-                                },
-                                onDismiss = { showDialog.value = false }
+                                color = Primary
                             )
-                        }
-                        TextButton(
-                            onClick = { showDialog.value = true },
-                            shape = Shapes.large,
-                            contentPadding = PaddingValues(0.dp),
-                            modifier = Modifier.height(20.dp)
-                        ) {
-                            Text(
-                                text = state.date?.format() ?: "Select date"
-                            )
-
-                        }
+                        },
+                        arrangement = Arrangement.End,
+                        onValueChange = {
+                            addViewmodel.setNote(it)
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                        textStyle = TextStyle(
+                            textAlign = TextAlign.Right,
+                        ),
+                    )
+                })
+                Divider(Modifier.padding(start = 16.dp, end = 16.dp))
+                TableRow(label = "Category", detailContent = {
+                    var categoriesMenuOpened by remember {
+                        mutableStateOf(false)
                     }
-
-                    Divider(Modifier.padding(start = 16.dp, end = 16.dp))
-                    TableRow(label = "Note", detailContent = {
-                        Spacer(modifier = Modifier.weight(1f))
-
-                        UnstyledTextField(
-                            value = state.note,
-                            placeholder = {
-                                Text(
-                                    "Leave some notes",
-                                    fontSize = 14.sp,
-                                    textAlign = TextAlign.End,
-                                    color = Primary
-                                )
-                            },
-                            arrangement = Arrangement.End,
-                            onValueChange = {
-                                addViewmodel.setNote(it)
-                            },
-                            modifier = Modifier.fillMaxWidth(),
-                            textStyle = TextStyle(
-                                textAlign = TextAlign.Right,
-                            ),
-                        )
-                    })
-                    Divider(Modifier.padding(start = 16.dp, end = 16.dp))
-                    TableRow(label = "Category", detailContent = {
-                        var categoriesMenuOpened by remember {
-                            mutableStateOf(false)
-                        }
-                        TextButton(
-                            onClick = { categoriesMenuOpened = true },
-                            shape = Shapes.large,
-                            contentPadding = PaddingValues(0.dp),
-                            modifier = Modifier.height(20.dp)
-                        ) {
-                            Text(
+                    TextButton(
+                        onClick = { categoriesMenuOpened = true },
+                        shape = Shapes.large,
+                        contentPadding = PaddingValues(0.dp),
+                        modifier = Modifier.height(20.dp)
+                    ) {
+                        Text(
+                            if (state.category.name != "") {
                                 state.category.name
-                            )
-                            DropdownMenu(expanded = categoriesMenuOpened,
-                                onDismissRequest = { categoriesMenuOpened = false }) {
-                                state.categories?.forEach { category ->
-                                    DropdownMenuItem(text = {
-                                        Row(verticalAlignment = Alignment.CenterVertically) {
-                                            Surface(
-                                                modifier = Modifier.size(10.dp),
-                                                shape = CircleShape,
-                                                color = Color(category.color)
-                                            ) {}
-                                            Text(
-                                                category.name,
-                                                modifier = Modifier.padding(start = 8.dp)
-                                            )
-                                        }
-                                    }, onClick = {
-                                        addViewmodel.setCategory(category)
-                                        categoriesMenuOpened = false
-                                    })
-                                }
+                            } else {
+                                "Select category"
+                            }
+                        )
+                        DropdownMenu(expanded = categoriesMenuOpened,
+                            onDismissRequest = { categoriesMenuOpened = false }) {
+                            state.categoryList.forEach { category ->
+                                DropdownMenuItem(text = {
+                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                        Surface(
+                                            modifier = Modifier.size(10.dp),
+                                            shape = CircleShape,
+                                            color = Color(category.color)
+                                        ) {}
+                                        Text(
+                                            category.name,
+                                            modifier = Modifier.padding(start = 8.dp)
+                                        )
+                                    }
+                                }, onClick = {
+                                    addViewmodel.setCategory(category)
+                                    categoriesMenuOpened = false
+                                })
+
                             }
                         }
-                    })
-                }
+                    }
+                })
+            }
 
-                Button(
-                    onClick = {
-                        addViewmodel.submitExpense(database = database)
-                    },
-                    modifier = Modifier
-                        .padding(16.dp),
-                    shape = Shapes.medium
-                ) {
-                    Text(text = "Submit expense")
-                }
+            Button(
+                onClick = {
+
+
+                        addViewmodel.submitExpense(database)
+
+
+                }, modifier = Modifier.padding(16.dp), shape = Shapes.medium
+            ) {
+                Text(text = "Submit expense")
+
             }
         }
-    )
+    })
 }
 
 

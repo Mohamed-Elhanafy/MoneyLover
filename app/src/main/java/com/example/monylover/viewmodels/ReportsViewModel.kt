@@ -10,20 +10,24 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
 
-data class ReportsState(
-    val expanses: List<Expense> = listOf()
+data class ReportsScreenStatus(
+    val expansesList:List<Expense> = listOf(),
+
 )
 class ReportsViewModel:ViewModel() {
+    private val _uiState = MutableStateFlow(ReportsScreenStatus())
+    val uiState: StateFlow<ReportsScreenStatus> = _uiState.asStateFlow()
 
-    private val _uiState = MutableStateFlow(ReportsState())
-    val uiState: StateFlow<ReportsState> = _uiState.asStateFlow()
 
+    fun getExpanses(database:RoomDb){
+        viewModelScope.launch(Dispatchers.IO){
+            _uiState.update { currentState->
+                currentState.copy(
+                    expansesList = database.databaseDao().getAllExpenses()
+                )
 
-    fun getExpenses(database: RoomDb) {
-        viewModelScope.launch(Dispatchers.IO) {
-            _uiState.update {currentState ->
-                currentState.copy(database.databaseDao().getAllExpenses())
             }
         }
     }
