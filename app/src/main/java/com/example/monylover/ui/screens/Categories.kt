@@ -65,8 +65,7 @@ fun Categories(
     database: RoomDb
 ) {
     val uiState by viewmodel.uiState.collectAsState()
-
-
+    viewmodel.getCategories(database)
 
 
 
@@ -171,7 +170,8 @@ fun Categories(
                             .clickable {
 
                                 viewmodel.onDialogShowChange(true)
-                            },
+                            }
+                        ,
                         border = BorderStroke(
                             width = 2.dp,
                             color = Color.White

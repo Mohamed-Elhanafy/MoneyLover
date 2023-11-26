@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 data class AddScreenState(
@@ -24,13 +25,16 @@ data class AddScreenState(
     val date: LocalDateTime = LocalDateTime.now(),
     val note: String = "",
     val category: Category = Category(),
+
     val categoryList: List<Category> = listOf(),
+
 )
 
 class AddViewModel() : ViewModel() {
 
     private val _uiState = MutableStateFlow(AddScreenState())
     val uiState: StateFlow<AddScreenState> = _uiState.asStateFlow()
+
 
     fun getCategoryList(database: RoomDb) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -94,6 +98,7 @@ class AddViewModel() : ViewModel() {
 
 
     fun submitExpense(database: RoomDb ) {
+
         viewModelScope.launch(Dispatchers.IO) {
             Log.i("TAG", "submitExpense: ${uiState.value.date.format()}")
             database.databaseDao().insertExpense(
@@ -102,12 +107,16 @@ class AddViewModel() : ViewModel() {
                     recurrence = uiState.value.recurrence,
                     date = uiState.value.date,
                     note = uiState.value.note,
+
                     category = Category(
                         name = uiState.value.category.name,
                         color = uiState.value.category.color
                     ),
+
                 )
             )
+
+
         }
     }
 }

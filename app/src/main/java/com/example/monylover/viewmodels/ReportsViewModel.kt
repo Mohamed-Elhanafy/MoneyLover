@@ -27,6 +27,7 @@ class ReportsViewModel:ViewModel() {
                 currentState.copy(
                     expansesList = database.databaseDao().getAllExpenses()
                 )
+
             }
         }
     }

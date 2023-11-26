@@ -1,6 +1,7 @@
 package com.example.monylover
 
 import android.annotation.SuppressLint
+import android.app.Application
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
@@ -56,7 +57,7 @@ class MainActivity : ComponentActivity() {
 
                 Scaffold(
                     bottomBar = {
-                        if (showBottomBar){
+                        if (showBottomBar) {
                             NavBar(backStackEntry = backStackEntry, navController = navController)
                         }
                     },
@@ -72,7 +73,9 @@ class MainActivity : ComponentActivity() {
                                     .padding(innerPadding),
                                 color = MaterialTheme.colorScheme.background
                             ) {
+
                                 ExpanseScreen(navController = navController , database = database)
+
                             }
                         }
                         composable("reports") {
@@ -83,7 +86,9 @@ class MainActivity : ComponentActivity() {
                                     .padding(innerPadding),
                                 color = MaterialTheme.colorScheme.background
                             ) {
+
                                 ReportsScreen(navController = navController , database = database)
+
                             }
                         }
                         composable("add") {
@@ -94,7 +99,9 @@ class MainActivity : ComponentActivity() {
                                     .padding(innerPadding),
                                 color = MaterialTheme.colorScheme.background
                             ) {
+
                                 AddScreen(navController = navController , database = database)
+
                             }
                         }
                         composable("setting") {
@@ -114,7 +121,9 @@ class MainActivity : ComponentActivity() {
                                     .fillMaxSize()
                                     .padding(innerPadding),
                             ) {
+
                                 Categories(navController = navController,database = database)
+
                             }
                         }
                     }

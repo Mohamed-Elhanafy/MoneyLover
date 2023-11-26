@@ -66,7 +66,9 @@ import java.time.format.DateTimeFormatter
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddScreen(
+
     navController: NavController, addViewmodel: AddViewModel = AddViewModel(), database: RoomDb
+
 ) {
     val state by addViewmodel.uiState.collectAsState()
 
@@ -74,7 +76,9 @@ fun AddScreen(
         Recurrence.None, Recurrence.Daily, Recurrence.Weekly, Recurrence.Monthly, Recurrence.Yearly
     )
 
+
     addViewmodel.getCategoryList(database = database)
+
 
 
 
@@ -124,7 +128,6 @@ fun AddScreen(
                         Text(
                             text = state.recurrence.name,
                             textAlign = TextAlign.End,
-
                             )
                         DropdownMenu(expanded = recurrenceMenuExpanded,
                             onDismissRequest = { recurrenceMenuExpanded = false }) {
@@ -133,6 +136,7 @@ fun AddScreen(
                                     addViewmodel.setRecurrence(label)
                                     recurrenceMenuExpanded = false
                                 })
+
                             }
                         }
                     }
@@ -228,6 +232,7 @@ fun AddScreen(
                                     addViewmodel.setCategory(category)
                                     categoriesMenuOpened = false
                                 })
+
                             }
                         }
                     }
@@ -237,12 +242,14 @@ fun AddScreen(
             Button(
                 onClick = {
 
+
                         addViewmodel.submitExpense(database)
 
 
                 }, modifier = Modifier.padding(16.dp), shape = Shapes.medium
             ) {
                 Text(text = "Submit expense")
+
             }
         }
     })

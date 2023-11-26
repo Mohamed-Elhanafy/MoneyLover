@@ -27,7 +27,9 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+
 import androidx.compose.runtime.mutableDoubleStateOf
+
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -63,7 +65,9 @@ import kotlin.random.Random
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
+
 fun ReportsScreen(navController: NavController , database:RoomDb , viewmodel: ReportsViewModel = ReportsViewModel()) {
+
 
     val recurrence: Recurrence = Recurrence.Weekly
     var menuOpened = remember { mutableStateOf(false) }
@@ -77,7 +81,6 @@ fun ReportsScreen(navController: NavController , database:RoomDb , viewmodel: Re
         Recurrence.Monthly,
         Recurrence.Yearly
     )
-
 
 
 
@@ -126,7 +129,9 @@ fun ReportsScreen(navController: NavController , database:RoomDb , viewmodel: Re
             HorizontalPager(state = pagerState, reverseLayout = true) { page ->
 
                 val (start, end, daysInRange) = calculateDateRange(recurrenceSelected.value, page)
+
                 val filteredExpenses = state.expansesList.filter { expense ->
+
                     (expense.date.toLocalDate().isAfter(start) && expense.date.toLocalDate()
                         .isBefore(end)) || expense.date.toLocalDate()
                         .isEqual(start) || expense.date.toLocalDate().isEqual(end)
@@ -221,12 +226,4 @@ fun ReportsScreen(navController: NavController , database:RoomDb , viewmodel: Re
     )
 }
 
-/*
 
-@Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-fun ReportsScreenPreview() {
-    MonyLoverTheme {
-        ReportsScreen(navController = rememberNavController())
-    }
-}*/

@@ -15,7 +15,7 @@ import com.example.monylover.ui.theme.Primary
 data class Category (
     @PrimaryKey(autoGenerate = true) var id: Int = 0,
     @ColumnInfo(name = "name")
-    var name: String = "",
+    var name: String = "Select category",
     @ColumnInfo(name = "color")
     var color: Int = Primary.toArgb() // Store the color as Int
 

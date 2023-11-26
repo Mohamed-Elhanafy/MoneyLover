@@ -99,6 +99,7 @@ dependencies {
     //coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.2")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0-beta01")
     //gson library
     implementation("com.google.code.gson:gson:2.10.1")
 

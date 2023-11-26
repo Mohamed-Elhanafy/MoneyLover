@@ -45,7 +45,9 @@ val list = listOf(
         recurrence = Recurrence.None,
         category =  Category(
             name = "Bills",
+
             color = Color(
+
                 Random.nextInt(0, 255),
                 Random.nextInt(0, 255),
                 Random.nextInt(0, 255)

@@ -9,7 +9,9 @@ import com.example.monylover.models.Category
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -25,6 +27,29 @@ class CategoriesViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(CategoriesState())
     val uiState: StateFlow<CategoriesState> = _uiState.asStateFlow()
 
+    fun getCategories(database: RoomDb) {
+        viewModelScope.launch(Dispatchers.IO) {
+            _uiState.update {currentState ->
+                currentState.copy(categories = database.databaseDao().getAllCategories())
+            }
+        }
+    }
+
+    fun setNewCategoryColor(color: Color) {
+        _uiState.update { currentState ->
+            currentState.copy(
+                newCategoryColor = color
+            )
+        }
+    }
+
+    fun setNewCategoryName(name: String) {
+        _uiState.update { currentState ->
+            currentState.copy(
+                newCategoryName = name
+            )
+        }
+    }
 
     fun onCategoryNameChange(newCategoryName: String) {
         _uiState.update { currentState ->
@@ -64,5 +89,9 @@ class CategoriesViewModel : ViewModel() {
 
     }
 
-
+    fun deleteCategory(category: Category, database: RoomDb) {
+        viewModelScope.launch(Dispatchers.IO) {
+            database.databaseDao().deleteCategory(category)
+        }
+    }
 }
